@@ -25,7 +25,7 @@ export function LandingNavbar() {
 
   return (
     <header className={`landing-navbar${scrolled ? ' scrolled' : ''}`}>
-      <div className="container landing-navbar__inner">
+      <div className="landing-navbar__inner">
         <Link to="/" className="landing-navbar__logo">
           <span className="logo-mark">✦</span>
           <span className="logo-text">Luminary</span>
