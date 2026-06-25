@@ -10,6 +10,33 @@
   padding: var(--space-6);
 }
 
+.back-home-btn {
+  position: absolute;
+  top: 20px;
+  left: 24px;
+  z-index: 2;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 16px;
+  font-size: var(--text-sm);
+  font-weight: 500;
+  color: var(--color-text-secondary);
+  background: var(--color-bg);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-full);
+  text-decoration: none;
+  transition: all 0.2s ease;
+  box-shadow: var(--shadow-sm);
+}
+
+.back-home-btn:hover {
+  color: var(--color-accent);
+  border-color: var(--color-accent);
+  background: var(--color-accent-light);
+  transform: translateX(-2px);
+}
+
 .auth-bg {
   position: absolute;
   top: 0;

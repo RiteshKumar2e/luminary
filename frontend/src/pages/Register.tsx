@@ -4,7 +4,7 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import toast from 'react-hot-toast';
-import { Mail, Lock, User, UserCircle, ArrowRight } from 'lucide-react';
+import { Mail, Lock, User, UserCircle, ArrowRight, ArrowLeft } from 'lucide-react';
 import { authService } from '../services/authService';
 import { useAuth } from '../context/AuthContext';
 import type { RegisterForm } from '../types';
@@ -43,6 +43,10 @@ export default function Register() {
 
   return (
     <div className="auth-page">
+      <Link to="/" className="back-home-btn">
+        <ArrowLeft size={16} />
+        <span>Back to Home</span>
+      </Link>
       <div className="auth-card">
         <div className="auth-card__header">
           <Link to="/" className="auth-logo">
