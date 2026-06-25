@@ -166,8 +166,11 @@ export default function Landing() {
       <div className="l-techbar">
         <div className="container l-techbar__inner">
           <span className="l-techbar__label">Powered by</span>
-          {['Groq', 'IBM Watson', 'React 18', 'FastAPI', 'SQLAlchemy'].map(t => (
-            <span key={t} className="l-techbar__name">{t}</span>
+          {['Groq', 'IBM Watson', 'React 18', 'FastAPI', 'SQLAlchemy'].map((t, i, arr) => (
+            <>
+              <span key={t} className="l-techbar__name">{t}</span>
+              {i < arr.length - 1 && <span key={`sep-${t}`} className="l-techbar__sep">·</span>}
+            </>
           ))}
         </div>
       </div>

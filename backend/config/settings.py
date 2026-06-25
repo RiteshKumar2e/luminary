@@ -6,7 +6,8 @@ class Settings(BaseSettings):
     APP_NAME: str = "Luminary AI"
     APP_VERSION: str = "1.0.0"
     DEBUG: bool = True
-    SECRET_KEY: str = "dev-secret-key-change-in-production-min-32-chars"
+    # No default — must be set in .env
+    SECRET_KEY: str
     ALGORITHM: str = "HS256"
     ACCESS_TOKEN_EXPIRE_MINUTES: int = 10080  # 7 days
 
