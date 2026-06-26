@@ -22,9 +22,9 @@
   display: flex;
   align-items: center;
   height: 68px;
-  padding: 0 24px;
-  max-width: 1200px;
-  margin: 0 auto;
+  padding: 0 48px; /* Breathing room from screen corners */
+  width: 100%;
+  box-sizing: border-box;
 }
 
 .landing-navbar__logo {
@@ -145,6 +145,9 @@
 }
 
 @media (max-width: 768px) {
+  .landing-navbar__inner {
+    padding: 0 24px; /* Narrower padding for mobile viewports */
+  }
   .landing-navbar__links {
     display: none;
     position: fixed;
