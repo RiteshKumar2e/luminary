@@ -266,3 +266,17 @@
 .password-toggle-btn:hover {
   color: var(--color-text-secondary);
 }
+
+/* Horizontal Form Row for Side-by-side fields */
+.form-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--space-4);
+}
+
+@media (max-width: 480px) {
+  .form-row {
+    grid-template-columns: 1fr;
+    gap: var(--space-4);
+  }
+}

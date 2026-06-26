@@ -109,52 +109,54 @@ export default function Register() {
             {errors.full_name && <span className="form-error">{errors.full_name.message}</span>}
           </div>
 
-          <div className="form-group">
-            <label htmlFor="password" className="form-label">
-              <Lock size={14} /> Password
-            </label>
-            <div className="password-input-container">
-              <input
-                {...register('password')}
-                id="password"
-                type={showPassword ? 'text' : 'password'}
-                placeholder="••••••••"
-                className={`form-input${errors.password ? ' error' : ''}`}
-              />
-              <button
-                type="button"
-                className="password-toggle-btn"
-                onClick={() => setShowPassword(!showPassword)}
-                aria-label={showPassword ? 'Hide password' : 'Show password'}
-              >
-                {showPassword ? <EyeOff size={16} /> : <Eye size={16} />}
-              </button>
+          <div className="form-row">
+            <div className="form-group">
+              <label htmlFor="password" className="form-label">
+                <Lock size={14} /> Password
+              </label>
+              <div className="password-input-container">
+                <input
+                  {...register('password')}
+                  id="password"
+                  type={showPassword ? 'text' : 'password'}
+                  placeholder="••••••••"
+                  className={`form-input${errors.password ? ' error' : ''}`}
+                />
+                <button
+                  type="button"
+                  className="password-toggle-btn"
+                  onClick={() => setShowPassword(!showPassword)}
+                  aria-label={showPassword ? 'Hide password' : 'Show password'}
+                >
+                  {showPassword ? <EyeOff size={16} /> : <Eye size={16} />}
+                </button>
+              </div>
+              {errors.password && <span className="form-error">{errors.password.message}</span>}
             </div>
-            {errors.password && <span className="form-error">{errors.password.message}</span>}
-          </div>
 
-          <div className="form-group">
-            <label htmlFor="confirm_password" className="form-label">
-              <Lock size={14} /> Confirm Password
-            </label>
-            <div className="password-input-container">
-              <input
-                {...register('confirm_password')}
-                id="confirm_password"
-                type={showConfirmPassword ? 'text' : 'password'}
-                placeholder="••••••••"
-                className={`form-input${errors.confirm_password ? ' error' : ''}`}
-              />
-              <button
-                type="button"
-                className="password-toggle-btn"
-                onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-                aria-label={showConfirmPassword ? 'Hide password' : 'Show password'}
-              >
-                {showConfirmPassword ? <EyeOff size={16} /> : <Eye size={16} />}
-              </button>
+            <div className="form-group">
+              <label htmlFor="confirm_password" className="form-label">
+                <Lock size={14} /> Confirm Password
+              </label>
+              <div className="password-input-container">
+                <input
+                  {...register('confirm_password')}
+                  id="confirm_password"
+                  type={showConfirmPassword ? 'text' : 'password'}
+                  placeholder="••••••••"
+                  className={`form-input${errors.confirm_password ? ' error' : ''}`}
+                />
+                <button
+                  type="button"
+                  className="password-toggle-btn"
+                  onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                  aria-label={showConfirmPassword ? 'Hide password' : 'Show password'}
+                >
+                  {showConfirmPassword ? <EyeOff size={16} /> : <Eye size={16} />}
+                </button>
+              </div>
+              {errors.confirm_password && <span className="form-error">{errors.confirm_password.message}</span>}
             </div>
-            {errors.confirm_password && <span className="form-error">{errors.confirm_password.message}</span>}
           </div>
 
           <div className="form-group">
