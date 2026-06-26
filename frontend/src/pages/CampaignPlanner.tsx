@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 import { motion } from 'framer-motion';
 import { useForm, Controller } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -33,6 +33,7 @@ const BUDGETS = [
 export default function CampaignPlanner() {
   const [loading, setLoading] = useState(false);
   const [result, setResult] = useState<GenerationResult | null>(null);
+  const outputRef = useRef<HTMLDivElement>(null);
 
   const { register, handleSubmit, control, reset, formState: { errors } } = useForm<CampaignForm>({
     resolver: zodResolver(campaignSchema),
@@ -45,6 +46,7 @@ export default function CampaignPlanner() {
       const res = await contentService.generateCampaign(data);
       setResult(res);
       toast.success('Campaign generated!');
+      setTimeout(() => outputRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' }), 50);
     } catch (err: any) {
       toast.error(err.response?.data?.detail || 'Generation failed');
     } finally {
@@ -155,7 +157,7 @@ export default function CampaignPlanner() {
           </form>
         </div>
 
-        <div className="cp-output-panel">
+        <div className="cp-output-panel" ref={outputRef}>
           {loading && (
             <div className="output-loading">
               <div className="spinner spinner-lg" />

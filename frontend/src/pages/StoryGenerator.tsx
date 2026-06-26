@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 import { motion } from 'framer-motion';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -30,6 +30,7 @@ const TONES = ['Hopeful', 'Dark', 'Humorous', 'Suspenseful', 'Romantic', 'Melanc
 export default function StoryGenerator() {
   const [loading, setLoading] = useState(false);
   const [result, setResult] = useState<GenerationResult | null>(null);
+  const outputRef = useRef<HTMLDivElement>(null);
 
   const { register, handleSubmit, reset, formState: { errors } } = useForm<StoryForm>({
     resolver: zodResolver(storySchema),
@@ -47,6 +48,7 @@ export default function StoryGenerator() {
       });
       setResult(res);
       toast.success('Story generated!');
+      setTimeout(() => outputRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' }), 50);
     } catch (err: any) {
       toast.error(err.response?.data?.detail || 'Generation failed');
     } finally {
@@ -152,7 +154,7 @@ export default function StoryGenerator() {
           </form>
         </div>
 
-        <div className="sg-output-panel">
+        <div className="sg-output-panel" ref={outputRef}>
           {loading && (
             <div className="output-loading">
               <div className="spinner spinner-lg" />

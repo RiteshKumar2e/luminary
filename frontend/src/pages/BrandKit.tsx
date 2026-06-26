@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 import { motion } from 'framer-motion';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -35,6 +35,7 @@ export default function BrandKit() {
   const [newValue, setNewValue] = useState('');
   const [moodBoard, setMoodBoard] = useState<MoodBoardPhoto[]>([]);
   const [moodLoading, setMoodLoading] = useState(false);
+  const outputRef = useRef<HTMLDivElement>(null);
 
   const { register, handleSubmit, reset, formState: { errors }, watch, setValue } = useForm<BrandKitForm>({
     resolver: zodResolver(brandKitSchema),
@@ -59,6 +60,7 @@ export default function BrandKit() {
       const res = await contentService.generateBrandKit(data);
       setResult(res);
       toast.success('Brand kit generated!');
+      setTimeout(() => outputRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' }), 50);
       // Fetch visual mood board from brand keywords
       const keywords = [data.brand_name, data.industry, data.brand_personality.split(' ').slice(0, 2).join(' ')].join(',');
       setMoodLoading(true);
@@ -171,7 +173,7 @@ export default function BrandKit() {
           </form>
         </div>
 
-        <div className="bk-output-panel">
+        <div className="bk-output-panel" ref={outputRef}>
           {loading && (
             <div className="output-loading">
               <div className="spinner spinner-lg" />
