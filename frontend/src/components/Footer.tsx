@@ -167,7 +167,7 @@ export function Footer() {
           <div className="footer__col">
             <h4>Company</h4>
             <a href="/#about">About</a>
-            <Link to="/contact">Contact</Link>
+            <a href="/#contact">Contact</a>
           </div>
           <div className="footer__col">
             <h4>Tools</h4>

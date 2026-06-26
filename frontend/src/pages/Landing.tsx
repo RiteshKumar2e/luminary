@@ -6,7 +6,12 @@ import {
   ArrowRight, Zap, Shield, BarChart3,
   CheckCircle2, ChevronRight,
   FileText, Lightbulb, Star,
+  Mail, User, MapPin, Send
 } from 'lucide-react';
+import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { z } from 'zod';
+import toast from 'react-hot-toast';
 import { useDemoLogin } from '../hooks/useDemoLogin';
 import '../styles/Landing.css';
 
@@ -112,14 +117,37 @@ const TESTIMONIALS = [
   }
 ];
 
+const contactSchema = z.object({
+  name: z.string().min(2, 'Name required'),
+  email: z.string().email('Invalid email'),
+  company: z.string().optional(),
+  message: z.string().min(10, 'Message must be 10+ characters'),
+});
+
+type ContactForm = z.infer<typeof contactSchema>;
+
 /* ════════════════════════════════════════ */
 export default function Landing() {
   const { loginAsDemo, loading: demoLoading } = useDemoLogin();
 
-  return (
-    <div className="landing">
+  const [contactLoading, setContactLoading] = useState(false);
+  const { register, handleSubmit, reset, formState: { errors } } = useForm<ContactForm>({
+    resolver: zodResolver(contactSchema),
+  });
 
-      {/* ── HERO ── */}
+  const onContactSubmit = async (data: ContactForm) => {
+    setContactLoading(true);
+    await new Promise((r) => setTimeout(r, 1200));
+    console.log('Landing contact form submission:', data);
+    toast.success("Message sent! We'll get back to you soon.");
+    reset();
+    setContactLoading(false);
+  };
+
+  return (
+    <div className="landing" id="home">
+
+      {/* ── HOME SECTION: HERO ── */}
       <section className="l-hero">
         <div className="container l-hero__inner">
           <motion.div initial="hidden" animate="visible" variants={stagger} className="l-hero__text">
@@ -188,71 +216,7 @@ export default function Landing() {
         </div>
       </section>
 
-      {/* ── FEATURES ── */}
-      <section className="l-features" id="features">
-        <div className="container">
-          <AnimSection className="l-section-head">
-            <motion.p variants={fadeUp} custom={0} className="section-eyebrow">Features</motion.p>
-            <motion.h2 variants={fadeUp} custom={1}>Everything you need to create</motion.h2>
-            <motion.p variants={fadeUp} custom={2} className="section-sub">
-              Six AI tools in one workspace. Write faster, brand better, campaign smarter.
-            </motion.p>
-          </AnimSection>
-
-          <div className="l-features__grid">
-            {FEATURES.map((f, i) => (
-              <motion.div
-                key={f.title}
-                className="feat-card"
-                initial={{ opacity: 0, y: 16 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true, margin: '-32px' }}
-                transition={{ delay: i * 0.06, duration: 0.45, ease: [0.22, 1, 0.36, 1] }}
-              >
-                <div className="feat-card__icon" style={{ background: f.bg, color: f.color }}>
-                  <f.icon size={18} strokeWidth={1.8} />
-                </div>
-                <h3>{f.title}</h3>
-                <p>{f.desc}</p>
-                <Link to="/register" className="feat-card__link">
-                  Try free <ChevronRight size={13} />
-                </Link>
-              </motion.div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* ── HOW IT WORKS ── */}
-      <section className="l-how" id="how-it-works">
-        <div className="container">
-          <AnimSection className="l-section-head">
-            <motion.p variants={fadeUp} custom={0} className="section-eyebrow">How it works</motion.p>
-            <motion.h2 variants={fadeUp} custom={1}>From brief to published in seconds</motion.h2>
-          </AnimSection>
-
-          <div className="l-how__steps">
-            {HOW.map((s, i) => (
-              <motion.div
-                key={s.n}
-                className="how-step"
-                initial={{ opacity: 0, y: 16 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true, margin: '-24px' }}
-                transition={{ delay: i * 0.1, duration: 0.45 }}
-              >
-                <span className="how-step__n">{s.n}</span>
-                <div>
-                  <h3>{s.title}</h3>
-                  <p>{s.desc}</p>
-                </div>
-              </motion.div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* ── ABOUT / STACK ── */}
+      {/* ── ABOUT SECTION ── */}
       <section className="l-about" id="about">
         <div className="container l-about__inner">
           <motion.div
@@ -296,7 +260,7 @@ export default function Landing() {
         </div>
       </section>
 
-      {/* ── TESTIMONIALS ── */}
+      {/* ── TESTIMONIALS SECTION ── */}
       <section className="l-testimonials" id="testimonials">
         <div className="container">
           <AnimSection className="l-section-head">
@@ -333,7 +297,179 @@ export default function Landing() {
         </div>
       </section>
 
+      {/* ── HOW IT WORKS SECTION ── */}
+      <section className="l-how" id="how-it-works">
+        <div className="container">
+          <AnimSection className="l-section-head">
+            <motion.p variants={fadeUp} custom={0} className="section-eyebrow">How it works</motion.p>
+            <motion.h2 variants={fadeUp} custom={1}>From brief to published in seconds</motion.h2>
+          </AnimSection>
 
+          <div className="l-how__steps">
+            {HOW.map((s, i) => (
+              <motion.div
+                key={s.n}
+                className="how-step"
+                initial={{ opacity: 0, y: 16 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true, margin: '-24px' }}
+                transition={{ delay: i * 0.1, duration: 0.45 }}
+              >
+                <span className="how-step__n">{s.n}</span>
+                <div>
+                  <h3>{s.title}</h3>
+                  <p>{s.desc}</p>
+                </div>
+              </motion.div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ── FEATURES SECTION ── */}
+      <section className="l-features" id="features">
+        <div className="container">
+          <AnimSection className="l-section-head">
+            <motion.p variants={fadeUp} custom={0} className="section-eyebrow">Features</motion.p>
+            <motion.h2 variants={fadeUp} custom={1}>Everything you need to create</motion.h2>
+            <motion.p variants={fadeUp} custom={2} className="section-sub">
+              Six AI tools in one workspace. Write faster, brand better, campaign smarter.
+            </motion.p>
+          </AnimSection>
+
+          <div className="l-features__grid">
+            {FEATURES.map((f, i) => (
+              <motion.div
+                key={f.title}
+                className="feat-card"
+                initial={{ opacity: 0, y: 16 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true, margin: '-32px' }}
+                transition={{ delay: i * 0.06, duration: 0.45, ease: [0.22, 1, 0.36, 1] }}
+              >
+                <div className="feat-card__icon" style={{ background: f.bg, color: f.color }}>
+                  <f.icon size={18} strokeWidth={1.8} />
+                </div>
+                <h3>{f.title}</h3>
+                <p>{f.desc}</p>
+                <Link to="/register" className="feat-card__link">
+                  Try free <ChevronRight size={13} />
+                </Link>
+              </motion.div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ── CONTACT SECTION ── */}
+      <section className="l-contact" id="contact">
+        <div className="container">
+          <div className="l-contact__inner">
+            <motion.div
+              className="l-contact__info"
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, margin: '-40px' }}
+              transition={{ duration: 0.5 }}
+            >
+              <p className="section-eyebrow">Contact Us</p>
+              <h2>Get in Touch</h2>
+              <p>
+                Have questions about Luminary, custom workflows, or enterprise solutions?
+                Send us a message and our team will get back to you shortly.
+              </p>
+
+              <div className="l-contact__cards">
+                <div className="l-contact__card">
+                  <div className="l-contact__card-icon">
+                    <Mail size={18} />
+                  </div>
+                  <div className="l-contact__card-details">
+                    <h3>Email Us</h3>
+                    <p>support@luminary-ai.com</p>
+                  </div>
+                </div>
+
+                <div className="l-contact__card">
+                  <div className="l-contact__card-icon">
+                    <MapPin size={18} />
+                  </div>
+                  <div className="l-contact__card-details">
+                    <h3>Location</h3>
+                    <p>San Francisco, CA</p>
+                  </div>
+                </div>
+              </div>
+            </motion.div>
+
+            <motion.div
+              className="l-contact__form-wrapper"
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, margin: '-40px' }}
+              transition={{ duration: 0.5, delay: 0.1 }}
+            >
+              <form onSubmit={handleSubmit(onContactSubmit)} className="l-contact__form">
+                <div className="form-group">
+                  <label htmlFor="landing-name" className="form-label">
+                    <User size={13} /> Name
+                  </label>
+                  <input
+                    {...register('name')}
+                    id="landing-name"
+                    type="text"
+                    placeholder="Your Name"
+                    className={`form-input${errors.name ? ' error' : ''}`}
+                  />
+                  {errors.name && <span className="form-error">{errors.name.message}</span>}
+                </div>
+
+                <div className="form-group">
+                  <label htmlFor="landing-email" className="form-label">
+                    <Mail size={13} /> Email
+                  </label>
+                  <input
+                    {...register('email')}
+                    id="landing-email"
+                    type="email"
+                    placeholder="you@example.com"
+                    className={`form-input${errors.email ? ' error' : ''}`}
+                  />
+                  {errors.email && <span className="form-error">{errors.email.message}</span>}
+                </div>
+
+                <div className="form-group">
+                  <label htmlFor="landing-company" className="form-label">Company (optional)</label>
+                  <input
+                    {...register('company')}
+                    id="landing-company"
+                    type="text"
+                    placeholder="Your Company"
+                    className="form-input"
+                  />
+                </div>
+
+                <div className="form-group">
+                  <label htmlFor="landing-message" className="form-label">Message</label>
+                  <textarea
+                    {...register('message')}
+                    id="landing-message"
+                    placeholder="Tell us how we can help..."
+                    className={`form-input${errors.message ? ' error' : ''}`}
+                    rows={4}
+                  />
+                  {errors.message && <span className="form-error">{errors.message.message}</span>}
+                </div>
+
+                <button type="submit" className="btn btn-primary btn-lg w-full" disabled={contactLoading}>
+                  {contactLoading ? <span className="spinner" /> : 'Send Message'}
+                  {!contactLoading && <Send size={16} />}
+                </button>
+              </form>
+            </motion.div>
+          </div>
+        </div>
+      </section>
 
     </div>
   );

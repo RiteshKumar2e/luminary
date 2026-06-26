@@ -3,11 +3,11 @@ import { Link, useLocation } from 'react-router-dom';
 import '../styles/Navbar.css';
 
 const NAV_LINKS = [
-  { label: 'Home', href: '/' },
+  { label: 'Home', href: '/#home' },
   { label: 'About', href: '/#about' },
   { label: 'How It Works', href: '/#how-it-works' },
   { label: 'Features', href: '/#features' },
-  { label: 'Contact', href: '/contact' },
+  { label: 'Contact', href: '/#contact' },
 ];
 
 export function LandingNavbar() {
