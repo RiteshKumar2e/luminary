@@ -202,18 +202,6 @@ export default function Landing() {
                 Get started free <ArrowRight size={16} />
               </Link>
             </motion.div>
-
-            <motion.div variants={fadeUp} custom={4} className="l-hero__proof">
-              <div className="avatar-group">
-                <span className="avatar" style={{ backgroundColor: '#D97706', color: '#fff' }}>S</span>
-                <span className="avatar" style={{ backgroundColor: '#2563EB', color: '#fff' }}>M</span>
-                <span className="avatar" style={{ backgroundColor: '#059669', color: '#fff' }}>E</span>
-                <span className="avatar-plus">+10k</span>
-              </div>
-              <span className="proof-text">
-                <strong>10,000+ creators</strong> &amp; marketers trust Luminary
-              </span>
-            </motion.div>
           </motion.div>
         </div>
       </section>
