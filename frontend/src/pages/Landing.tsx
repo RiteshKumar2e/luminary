@@ -176,9 +176,6 @@ export default function Landing() {
               <Link to="/register" className="btn btn-primary btn-lg">
                 Get started free <ArrowRight size={16} />
               </Link>
-              <button className="btn-outline-hero" onClick={loginAsDemo} disabled={demoLoading}>
-                {demoLoading ? <span className="spinner" /> : 'Live demo →'}
-              </button>
             </motion.div>
 
             <motion.div variants={fadeUp} custom={4} className="l-hero__proof">
