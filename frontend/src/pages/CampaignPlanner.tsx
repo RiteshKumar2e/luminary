@@ -83,19 +83,19 @@ export default function CampaignPlanner() {
           <form onSubmit={handleSubmit(onSubmit)} className="cp-form">
             <div className="form-group">
               <label className="form-label">Brand Name *</label>
-              <input {...register('brand_name')} className={`form-input${errors.brand_name ? ' error' : ''}`} placeholder="Nike, Acme Co." />
+              <input {...register('brand_name')} className={`form-input${errors.brand_name ? ' error' : ''}`} placeholder="Nike Football, FIFA World Cup Club, Apex Sports" />
               {errors.brand_name && <span className="form-error">{errors.brand_name.message}</span>}
             </div>
 
             <div className="form-group">
               <label className="form-label">Product / Service *</label>
-              <input {...register('product')} className={`form-input${errors.product ? ' error' : ''}`} placeholder="Running shoes, SaaS platform..." />
+              <input {...register('product')} className={`form-input${errors.product ? ' error' : ''}`} placeholder="World Cup fan jersey, ticket package, viewing party venue..." />
               {errors.product && <span className="form-error">{errors.product.message}</span>}
             </div>
 
             <div className="form-group">
               <label className="form-label">Target Audience *</label>
-              <input {...register('target_audience')} className={`form-input${errors.target_audience ? ' error' : ''}`} placeholder="Gen Z fitness enthusiasts, B2B SaaS buyers..." />
+              <input {...register('target_audience')} className={`form-input${errors.target_audience ? ' error' : ''}`} placeholder="Die-hard soccer fans, World Cup tourists, Gen Z athletic buyers..." />
               {errors.target_audience && <span className="form-error">{errors.target_audience.message}</span>}
             </div>
 

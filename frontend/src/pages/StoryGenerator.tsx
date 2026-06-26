@@ -24,7 +24,7 @@ const storySchema = z.object({
 
 type StoryForm = z.infer<typeof storySchema>;
 
-const GENRES = ['Fantasy', 'Sci-Fi', 'Romance', 'Thriller', 'Horror', 'Adventure', 'Mystery', 'Literary Fiction', 'Historical', 'General'];
+const GENRES = ['Sports Fiction (Soccer)', 'Fantasy', 'Sci-Fi', 'Romance', 'Thriller', 'Horror', 'Adventure', 'Mystery', 'Literary Fiction', 'Historical', 'General'];
 const TONES = ['Hopeful', 'Dark', 'Humorous', 'Suspenseful', 'Romantic', 'Melancholic', 'Inspiring', 'Neutral'];
 
 export default function StoryGenerator() {
@@ -127,7 +127,7 @@ export default function StoryGenerator() {
               <textarea
                 {...register('prompt')}
                 rows={4}
-                placeholder="Describe your story idea... e.g. A young wizard discovers she has the power to rewind time, but each use costs a memory."
+                placeholder="Describe your story idea... e.g. A young soccer player is subbed into the World Cup final in the last minute, or a coach designing an unconventional strategy to win a match."
                 className={`form-input${errors.prompt ? ' error' : ''}`}
               />
               {errors.prompt && <span className="form-error">{errors.prompt.message}</span>}
