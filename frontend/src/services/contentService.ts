@@ -8,6 +8,10 @@ import type {
   ScriptRequest,
   HistoryResponse,
   WatsonAnalysis,
+  ChatMessage,
+  ChatResponse,
+  StyleProfile,
+  MoodBoardResponse,
 } from '../types';
 
 export const contentService = {
@@ -59,6 +63,21 @@ export const contentService = {
 
   async deleteHistoryItem(id: string) {
     const res = await api.delete(`/creative/history/${id}`);
+    return res.data;
+  },
+
+  async chat(messages: ChatMessage[], context?: string): Promise<ChatResponse> {
+    const res = await api.post<ChatResponse>('/creative/chat', { messages, context });
+    return res.data;
+  },
+
+  async getStyleProfile(): Promise<StyleProfile> {
+    const res = await api.get<StyleProfile>('/creative/style-profile');
+    return res.data;
+  },
+
+  async getMoodBoard(keywords: string): Promise<MoodBoardResponse> {
+    const res = await api.get<MoodBoardResponse>('/creative/mood-board', { params: { keywords } });
     return res.data;
   },
 };

@@ -87,3 +87,13 @@ class ScriptRequest(BaseModel):
 class AnalysisRequest(BaseModel):
     text: str = Field(..., min_length=10)
     analysis_types: Optional[List[str]] = None  # tone, emotion, sentiment, keywords, entities
+
+
+class ChatMessage(BaseModel):
+    role: str  # "user" or "assistant"
+    content: str = Field(..., min_length=1, max_length=4000)
+
+
+class ChatRequest(BaseModel):
+    messages: List[ChatMessage] = Field(..., min_length=1)
+    context: Optional[str] = None  # recent generation context to inject

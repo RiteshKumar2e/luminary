@@ -4,10 +4,10 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import toast from 'react-hot-toast';
-import { Palette, Send, Copy, Download, RotateCcw, Plus, X } from 'lucide-react';
+import { Palette, Send, Copy, Download, RotateCcw, Plus, X, Image } from 'lucide-react';
 import { contentService } from '../services/contentService';
 import { WatsonBadge } from '../components/WatsonBadge';
-import type { GenerationResult } from '../types';
+import type { GenerationResult, MoodBoardPhoto } from '../types';
 import '../styles/BrandKit.css';
 
 const brandKitSchema = z.object({
@@ -33,6 +33,8 @@ export default function BrandKit() {
   const [loading, setLoading] = useState(false);
   const [result, setResult] = useState<GenerationResult | null>(null);
   const [newValue, setNewValue] = useState('');
+  const [moodBoard, setMoodBoard] = useState<MoodBoardPhoto[]>([]);
+  const [moodLoading, setMoodLoading] = useState(false);
 
   const { register, handleSubmit, reset, formState: { errors }, watch, setValue } = useForm<BrandKitForm>({
     resolver: zodResolver(brandKitSchema),
@@ -52,10 +54,18 @@ export default function BrandKit() {
 
   const onSubmit = async (data: BrandKitForm) => {
     setLoading(true);
+    setMoodBoard([]);
     try {
       const res = await contentService.generateBrandKit(data);
       setResult(res);
       toast.success('Brand kit generated!');
+      // Fetch visual mood board from brand keywords
+      const keywords = [data.brand_name, data.industry, data.brand_personality.split(' ').slice(0, 2).join(' ')].join(',');
+      setMoodLoading(true);
+      contentService.getMoodBoard(keywords)
+        .then((mb) => setMoodBoard(mb.photos))
+        .catch(() => {})
+        .finally(() => setMoodLoading(false));
     } catch (err: any) {
       toast.error(err.response?.data?.detail || 'Generation failed');
     } finally {
@@ -202,6 +212,39 @@ export default function BrandKit() {
                 ) : null;
               })()}
               {result.analysis && <div className="output-analysis"><WatsonBadge analysis={result.analysis} /></div>}
+
+              {/* Visual Mood Board */}
+              {(moodLoading || moodBoard.length > 0) && (
+                <div className="mood-board-section">
+                  <h3 className="mood-board-title">
+                    <Image size={16} /> Visual Inspiration
+                  </h3>
+                  {moodLoading ? (
+                    <div className="mood-board-loading">
+                      <div className="spinner" /> Loading visual mood board…
+                    </div>
+                  ) : (
+                    <div className="mood-board-grid">
+                      {moodBoard.slice(0, 9).map((photo, i) => (
+                        <motion.a
+                          key={i}
+                          href={photo.pexels_url || photo.large_url}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="mood-board-photo"
+                          initial={{ opacity: 0, scale: 0.95 }}
+                          animate={{ opacity: 1, scale: 1 }}
+                          transition={{ delay: i * 0.05 }}
+                          title={photo.alt}
+                        >
+                          <img src={photo.url} alt={photo.alt} loading="lazy" />
+                          <span className="mood-board-credit">{photo.photographer}</span>
+                        </motion.a>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              )}
             </motion.div>
           )}
         </div>

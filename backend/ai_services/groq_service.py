@@ -243,6 +243,53 @@ Number each idea. Be original and specific — no generic suggestions."""
 
         return await self.generate(system_prompt=system, prompt=user_prompt, temperature=0.92, max_tokens=2000)
 
+    async def generate_chat(
+        self,
+        messages: List[Dict[str, str]],
+        context: Optional[str] = None,
+    ) -> Dict[str, Any]:
+        system = (
+            "You are the Creative Muse — an imaginative, warm, and perceptive AI creative partner. "
+            "You help creators brainstorm ideas, develop stories, refine concepts, give honest creative feedback, "
+            "and spark inspiration. You ask thoughtful follow-up questions to understand their vision. "
+            "You are collaborative, not prescriptive — you expand possibilities rather than dictate answers. "
+            "Keep responses conversational and engaging, typically 2–4 paragraphs unless the user asks for something longer."
+        )
+        if context:
+            system += f"\n\nContext about this user's recent creative work:\n{context}"
+
+        full_messages = [{"role": "system", "content": system}] + messages
+
+        if not self._available:
+            return self._mock_chat_response(messages[-1]["content"] if messages else "")
+
+        try:
+            response = self.client.chat.completions.create(
+                model=self.model,
+                messages=full_messages,
+                temperature=0.88,
+                max_tokens=1024,
+            )
+            content = response.choices[0].message.content
+            usage = response.usage
+            return {
+                "content": content,
+                "tokens_used": usage.total_tokens if usage else 0,
+                "model": self.model,
+                "success": True,
+            }
+        except Exception as e:
+            logger.error(f"Groq chat error: {e}")
+            return self._mock_chat_response(messages[-1]["content"] if messages else "")
+
+    def _mock_chat_response(self, last_message: str) -> Dict[str, Any]:
+        return {
+            "content": "[Demo Mode — Groq API key not configured]\n\nYour Creative Muse is ready once you add your GROQ_API_KEY. For now, here's a placeholder reply to: " + last_message[:60],
+            "tokens_used": 0,
+            "model": "demo",
+            "success": False,
+        }
+
     def _mock_response(self, prompt: str) -> Dict[str, Any]:
         return {
             "content": f"[Demo Mode — Groq API key not configured]\n\nThis is a placeholder response for: '{prompt[:80]}...'\n\nConfigure your GROQ_API_KEY in the .env file to enable real AI generation.",

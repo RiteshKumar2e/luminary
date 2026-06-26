@@ -1,13 +1,14 @@
 import { NavLink, useNavigate } from 'react-router-dom';
 import {
   LayoutDashboard, Sparkles, BookOpen, Megaphone,
-  Palette, Archive, Clock, Settings, LogOut,
+  Palette, Archive, Clock, Settings, LogOut, MessageCircleHeart,
 } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import '../styles/AppSidebar.css';
 
 const NAV = [
   { to: '/dashboard', icon: LayoutDashboard, label: 'Dashboard' },
+  { to: '/muse', icon: MessageCircleHeart, label: 'Creative Muse', badge: 'NEW' },
   { to: '/studio', icon: Sparkles, label: 'Creative Studio' },
   { to: '/story', icon: BookOpen, label: 'Story Generator' },
   { to: '/campaign', icon: Megaphone, label: 'Campaign Planner' },
@@ -33,7 +34,7 @@ export function AppSidebar() {
       </div>
 
       <nav className="sidebar-nav">
-        {NAV.map(({ to, icon: Icon, label }) => (
+        {NAV.map(({ to, icon: Icon, label, badge }) => (
           <NavLink
             key={to}
             to={to}
@@ -43,6 +44,7 @@ export function AppSidebar() {
           >
             <Icon size={18} />
             <span>{label}</span>
+            {badge && <span className="sidebar-badge">{badge}</span>}
           </NavLink>
         ))}
       </nav>

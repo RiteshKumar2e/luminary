@@ -1,6 +1,6 @@
 from fastapi import HTTPException, status
 from sqlalchemy.orm import Session
-from typing import Optional
+from typing import Optional, List, Dict
 from models.user import User
 from models.history import GenerationHistory
 from schemas.content import (
@@ -10,10 +10,16 @@ from schemas.content import (
     CaptionRequest,
     ScriptRequest,
     AnalysisRequest,
+    ChatRequest,
 )
 from ai_services.groq_service import groq_service
 from ai_services.watson_service import watson_nlu
+from config.settings import settings
 import json
+import httpx
+import logging
+
+logger = logging.getLogger(__name__)
 
 
 async def _save_history(
@@ -166,3 +172,142 @@ async def delete_history_item(item_id: str, user: User, db: Session):
     db.delete(item)
     db.commit()
     return {"message": "Deleted successfully"}
+
+
+async def chat_with_muse(payload: ChatRequest, user: User, db: Session):
+    # Optionally inject recent generation context so the Muse knows what this user creates
+    context = payload.context
+    if not context:
+        recent = (
+            db.query(GenerationHistory)
+            .filter(GenerationHistory.user_id == user.id)
+            .order_by(GenerationHistory.created_at.desc())
+            .limit(3)
+            .all()
+        )
+        if recent:
+            snippets = [f"- {r.feature_type}: {r.prompt[:80]}" for r in recent]
+            context = "Recent creations:\n" + "\n".join(snippets)
+
+    messages = [{"role": m.role, "content": m.content} for m in payload.messages]
+    result = await groq_service.generate_chat(messages=messages, context=context)
+    return {"reply": result["content"], "tokens_used": result.get("tokens_used", 0)}
+
+
+async def get_style_profile(user: User, db: Session):
+    items = (
+        db.query(GenerationHistory)
+        .filter(
+            GenerationHistory.user_id == user.id,
+            GenerationHistory.watson_analysis.isnot(None),
+        )
+        .order_by(GenerationHistory.created_at.desc())
+        .limit(20)
+        .all()
+    )
+
+    if not items:
+        return {"has_data": False, "message": "Generate some content first to build your Creative DNA."}
+
+    emotion_totals: Dict[str, float] = {}
+    sentiment_counts: Dict[str, int] = {"positive": 0, "negative": 0, "neutral": 0}
+    all_keywords: List[str] = []
+    feature_counts: Dict[str, int] = {}
+
+    for item in items:
+        wa = item.watson_analysis or {}
+        emotions = wa.get("emotions", {})
+        for emotion, score in emotions.items():
+            emotion_totals[emotion] = emotion_totals.get(emotion, 0) + score
+
+        sentiment = wa.get("sentiment", {}).get("document", {}).get("label", "neutral")
+        sentiment_counts[sentiment] = sentiment_counts.get(sentiment, 0) + 1
+
+        keywords = wa.get("top_keywords", [])
+        all_keywords.extend(keywords[:5])
+
+        ft = item.feature_type
+        feature_counts[ft] = feature_counts.get(ft, 0) + 1
+
+    n = len(items)
+    emotion_avg = {e: round(v / n, 3) for e, v in emotion_totals.items()}
+    dominant_emotion = max(emotion_avg, key=emotion_avg.get) if emotion_avg else "joy"
+
+    # Deduplicate keywords by frequency
+    kw_freq: Dict[str, int] = {}
+    for kw in all_keywords:
+        kw_freq[kw] = kw_freq.get(kw, 0) + 1
+    top_keywords = sorted(kw_freq, key=kw_freq.get, reverse=True)[:8]
+
+    dominant_tool = max(feature_counts, key=feature_counts.get) if feature_counts else "story"
+
+    emotion_labels = {
+        "joy": "Joyful Visionary",
+        "sadness": "Depth Seeker",
+        "anger": "Passionate Disruptor",
+        "fear": "Tension Weaver",
+        "disgust": "Bold Challenger",
+    }
+    signature = emotion_labels.get(dominant_emotion, "Creative Explorer")
+
+    return {
+        "has_data": True,
+        "total_analyzed": n,
+        "dominant_emotion": dominant_emotion,
+        "emotion_profile": emotion_avg,
+        "sentiment_breakdown": sentiment_counts,
+        "top_keywords": top_keywords,
+        "feature_counts": feature_counts,
+        "dominant_tool": dominant_tool,
+        "creative_signature": signature,
+    }
+
+
+async def get_mood_board(keywords: str):
+    photos = []
+
+    if settings.PEXELS_API_KEY:
+        try:
+            query = keywords.replace(",", " ").strip()[:100]
+            async with httpx.AsyncClient(timeout=8.0) as client:
+                resp = await client.get(
+                    "https://api.pexels.com/v1/search",
+                    headers={"Authorization": settings.PEXELS_API_KEY},
+                    params={"query": query, "per_page": 9, "orientation": "landscape"},
+                )
+                if resp.status_code == 200:
+                    data = resp.json()
+                    for p in data.get("photos", []):
+                        photos.append({
+                            "url": p["src"]["medium"],
+                            "large_url": p["src"]["large"],
+                            "photographer": p["photographer"],
+                            "alt": p.get("alt", query),
+                            "pexels_url": p["url"],
+                        })
+        except Exception as e:
+            logger.warning(f"Pexels API error: {e}")
+
+    if not photos:
+        # Curated fallback using Unsplash's public CDN (no auth needed for direct image URLs)
+        fallback_ids = [
+            ("1551434678-e076c223a692", "Creative workspace"),
+            ("1454165804606-c3d57bc86b40", "Brainstorming"),
+            ("1493612276216-ee3925520721", "Colors and design"),
+            ("1541746972996-4e0b0f43e02a", "Brand identity"),
+            ("1508921912186-1d1a45ebb3c1", "Storytelling"),
+            ("1542626991-cbc4e32524cc", "Campaign planning"),
+            ("1486312338219-ce68d2c6f44d", "Digital creation"),
+            ("1519389950473-47ba0277781c", "Creative team"),
+            ("1500462918059-b1a0cb512f1d", "Art and imagination"),
+        ]
+        for img_id, alt in fallback_ids:
+            photos.append({
+                "url": f"https://images.unsplash.com/photo-{img_id}?w=400&q=80",
+                "large_url": f"https://images.unsplash.com/photo-{img_id}?w=1200&q=85",
+                "photographer": "Unsplash",
+                "alt": alt,
+                "pexels_url": "",
+            })
+
+    return {"photos": photos, "query": keywords}

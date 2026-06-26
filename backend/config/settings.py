@@ -25,6 +25,8 @@ class Settings(BaseSettings):
     MAX_UPLOAD_SIZE_MB: int = 10
     UPLOAD_DIR: str = "uploads"
 
+    PEXELS_API_KEY: str = ""
+
     @property
     def cors_origins(self) -> List[str]:
         return [o.strip() for o in self.ALLOWED_ORIGINS.split(",")]

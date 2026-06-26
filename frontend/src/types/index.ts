@@ -154,3 +154,42 @@ export interface ApiError {
 }
 
 export type LoadingState = 'idle' | 'loading' | 'success' | 'error';
+
+// Muse Chat
+export interface ChatMessage {
+  role: 'user' | 'assistant';
+  content: string;
+}
+
+export interface ChatResponse {
+  reply: string;
+  tokens_used: number;
+}
+
+// Creative DNA / Style Profile
+export interface StyleProfile {
+  has_data: boolean;
+  message?: string;
+  total_analyzed?: number;
+  dominant_emotion?: string;
+  emotion_profile?: Record<string, number>;
+  sentiment_breakdown?: Record<string, number>;
+  top_keywords?: string[];
+  feature_counts?: Record<string, number>;
+  dominant_tool?: string;
+  creative_signature?: string;
+}
+
+// Mood Board
+export interface MoodBoardPhoto {
+  url: string;
+  large_url: string;
+  photographer: string;
+  alt: string;
+  pexels_url: string;
+}
+
+export interface MoodBoardResponse {
+  photos: MoodBoardPhoto[];
+  query: string;
+}

@@ -9,6 +9,7 @@ from schemas.content import (
     CaptionRequest,
     ScriptRequest,
     AnalysisRequest,
+    ChatRequest,
 )
 from controllers.content_controller import (
     generate_story,
@@ -20,6 +21,9 @@ from controllers.content_controller import (
     analyze_content,
     get_history,
     delete_history_item,
+    chat_with_muse,
+    get_style_profile,
+    get_mood_board,
 )
 from auth.dependencies import get_current_user
 from models.user import User
@@ -109,3 +113,28 @@ async def delete_history(
     current_user: User = Depends(get_current_user),
 ):
     return await delete_history_item(item_id, current_user, db)
+
+
+@router.post("/chat")
+async def muse_chat(
+    payload: ChatRequest,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user),
+):
+    return await chat_with_muse(payload, current_user, db)
+
+
+@router.get("/style-profile")
+async def style_profile(
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user),
+):
+    return await get_style_profile(current_user, db)
+
+
+@router.get("/mood-board")
+async def mood_board(
+    keywords: str = Query(..., min_length=2),
+    current_user: User = Depends(get_current_user),
+):
+    return await get_mood_board(keywords)
