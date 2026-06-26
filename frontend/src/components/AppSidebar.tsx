@@ -8,7 +8,7 @@ import '../styles/AppSidebar.css';
 
 const NAV = [
   { to: '/dashboard', icon: LayoutDashboard, label: 'Dashboard' },
-  { to: '/muse', icon: MessageCircleHeart, label: 'Creative Muse', badge: 'NEW' },
+  { to: '/muse', icon: MessageCircleHeart, label: 'Creative Muse' },
   { to: '/studio', icon: Sparkles, label: 'Creative Studio' },
   { to: '/story', icon: BookOpen, label: 'Story Generator' },
   { to: '/campaign', icon: Megaphone, label: 'Campaign Planner' },

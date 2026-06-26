@@ -22,11 +22,13 @@ api.interceptors.response.use(
   (error: AxiosError) => {
     if (error.response?.status === 401) {
       const token = localStorage.getItem('luminary_token');
-      if (!isDemoToken(token)) {
-        localStorage.removeItem('luminary_token');
-        localStorage.removeItem('luminary_user');
-        window.location.href = '/login';
+      if (isDemoToken(token)) {
+        // Demo mode: backend rejects demo token — swallow silently
+        return Promise.reject(error);
       }
+      localStorage.removeItem('luminary_token');
+      localStorage.removeItem('luminary_user');
+      window.location.href = '/login';
     }
     return Promise.reject(error);
   }

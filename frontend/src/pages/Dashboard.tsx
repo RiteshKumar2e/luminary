@@ -12,7 +12,7 @@ import type { HistoryItem, StyleProfile } from '../types';
 import '../styles/Dashboard.css';
 
 const TOOLS = [
-  { to: '/muse', icon: MessageCircleHeart, label: 'Creative Muse', desc: 'AI creative partner — chat & iterate', color: '#7c5cd8', badge: 'NEW' },
+  { to: '/muse', icon: MessageCircleHeart, label: 'Creative Muse', desc: 'AI creative partner — chat & iterate', color: '#7c5cd8' },
   { to: '/studio', icon: Sparkles, label: 'Creative Studio', desc: 'Brainstorm & generate any content', color: '#f59e0b' },
   { to: '/story', icon: BookOpen, label: 'Story Generator', desc: 'Fiction, scripts & narratives', color: '#5b6af0' },
   { to: '/campaign', icon: Megaphone, label: 'Campaign Planner', desc: 'Full marketing campaigns', color: '#e11d48' },
