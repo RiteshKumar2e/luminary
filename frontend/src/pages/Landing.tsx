@@ -1,6 +1,6 @@
 import { useRef, useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { motion, useInView, AnimatePresence } from 'framer-motion';
+import { motion, useInView } from 'framer-motion';
 import {
   Sparkles, BookOpen, Megaphone, Palette,
   ArrowRight, Zap, Shield, BarChart3,
@@ -59,31 +59,6 @@ function AnimSection({ children, className = '' }: { children: React.ReactNode; 
   );
 }
 
-/* ── rotating word ── */
-const WORDS = ['Stories', 'Campaigns', 'Brand Kits', 'Captions', 'Scripts'];
-function RotatingWord() {
-  const [idx, setIdx] = useState(0);
-  const [show, setShow] = useState(true);
-  useEffect(() => {
-    const t = setInterval(() => {
-      setShow(false);
-      setTimeout(() => { setIdx(i => (i + 1) % WORDS.length); setShow(true); }, 300);
-    }, 2400);
-    return () => clearInterval(t);
-  }, []);
-  return (
-    <AnimatePresence mode="wait">
-      {show && (
-        <motion.span key={WORDS[idx]} className="hero-rotating-word"
-          initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }}
-          exit={{ opacity: 0, y: -10 }} transition={{ duration: 0.28, ease: 'easeOut' }}>
-          {WORDS[idx]}
-        </motion.span>
-      )}
-    </AnimatePresence>
-  );
-}
-
 /* ── data ── */
 const FEATURES = [
   { icon: BookOpen,  title: 'Story Generator',  desc: 'Craft narratives, fiction, and scripts across any genre with AI as your co-author.', color: '#5b6af0', bg: '#eef0fe' },
@@ -132,10 +107,13 @@ export default function Landing() {
               </span>
             </motion.div>
 
-            <motion.h1 variants={fadeUp} custom={1} className="l-hero__h1">
-              AI that generates<br />
-              <RotatingWord />&nbsp;that convert
-            </motion.h1>
+            <motion.div variants={fadeUp} custom={1}>
+              <h1 className="l-hero__h1">
+                AI that generates{' '}
+                <span className="hero-highlight">Content</span>{' '}
+                that converts
+              </h1>
+            </motion.div>
 
             <motion.p variants={fadeUp} custom={2} className="l-hero__sub">
               Luminary is the creative intelligence platform for marketers, writers,
