@@ -12,7 +12,6 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import toast from 'react-hot-toast';
-import { useDemoLogin } from '../hooks/useDemoLogin';
 import '../styles/Landing.css';
 
 /* ── variants ── */
@@ -66,31 +65,31 @@ function AnimSection({ children, className = '' }: { children: React.ReactNode; 
 
 /* ── data ── */
 const FEATURES = [
-  { icon: BookOpen,  title: 'Story Generator',  desc: 'Craft narratives, fiction, and scripts across any genre with AI as your co-author.', color: '#B08304', bg: '#FFFDE3' },
-  { icon: Megaphone, title: 'Campaign Planner', desc: 'Full marketing campaigns — messaging, hooks, ad headlines, and content calendars.',  color: '#B08304', bg: '#FFFDE3' },
-  { icon: Palette,   title: 'Brand Kit',        desc: 'Brand voice, color palettes, taglines, and messaging pillars — built in minutes.',   color: '#B08304', bg: '#FFFDE3' },
-  { icon: Lightbulb, title: 'Idea Brainstorm',  desc: 'Break creative blocks instantly. Generate original ideas on any topic or brief.',    color: '#B08304', bg: '#FFFDE3' },
-  { icon: FileText,  title: 'Caption Writer',   desc: 'Platform-optimised captions for Instagram, TikTok, LinkedIn, and Twitter.',          color: '#B08304', bg: '#FFFDE3' },
-  { icon: Sparkles,  title: 'Script Writer',    desc: 'YouTube videos, podcast intros, ad scripts, and explainer content on demand.',       color: '#B08304', bg: '#FFFDE3' },
+  { icon: BookOpen, title: 'Story Generator', desc: 'Craft narratives, fiction, and scripts across any genre with AI as your co-author.', color: '#B08304', bg: '#FFFDE3' },
+  { icon: Megaphone, title: 'Campaign Planner', desc: 'Full marketing campaigns — messaging, hooks, ad headlines, and content calendars.', color: '#B08304', bg: '#FFFDE3' },
+  { icon: Palette, title: 'Brand Kit', desc: 'Brand voice, color palettes, taglines, and messaging pillars — built in minutes.', color: '#B08304', bg: '#FFFDE3' },
+  { icon: Lightbulb, title: 'Idea Brainstorm', desc: 'Break creative blocks instantly. Generate original ideas on any topic or brief.', color: '#B08304', bg: '#FFFDE3' },
+  { icon: FileText, title: 'Caption Writer', desc: 'Platform-optimised captions for Instagram, TikTok, LinkedIn, and Twitter.', color: '#B08304', bg: '#FFFDE3' },
+  { icon: Sparkles, title: 'Script Writer', desc: 'YouTube videos, podcast intros, ad scripts, and explainer content on demand.', color: '#B08304', bg: '#FFFDE3' },
 ];
 
 const HOW = [
-  { n: '01', title: 'Describe your goal',      desc: 'Tell Luminary what you want to create — a story, campaign, brand, or any asset.' },
-  { n: '02', title: 'AI generates content',    desc: 'Groq LLaMA 3 produces high-quality output in under 3 seconds.' },
-  { n: '03', title: 'Watson scores quality',   desc: 'IBM Watson NLU analyses tone, emotion, sentiment, and readability instantly.' },
-  { n: '04', title: 'Refine and publish',      desc: 'Edit inline, save to your library, and ship with full confidence.' },
+  { n: '01', title: 'Describe your goal', desc: 'Tell Luminary what you want to create — a story, campaign, brand, or any asset.' },
+  { n: '02', title: 'AI generates content', desc: 'Groq LLaMA 3 produces high-quality output in under 3 seconds.' },
+  { n: '03', title: 'Watson scores quality', desc: 'IBM Watson NLU analyses tone, emotion, sentiment, and readability instantly.' },
+  { n: '04', title: 'Refine and publish', desc: 'Edit inline, save to your library, and ship with full confidence.' },
 ];
 
 const STATS = [
-  { value: 10,  suffix: '+', label: 'Creative Tools'        },
-  { value: 3,   suffix: 's', label: 'Avg. Generation Time'  },
-  { value: 99,  suffix: '%', label: 'Uptime SLA'            },
+  { value: 10, suffix: '+', label: 'Creative Tools' },
+  { value: 3, suffix: 's', label: 'Avg. Generation Time' },
+  { value: 99, suffix: '%', label: 'Uptime SLA' },
 ];
 
 const STACK = [
-  { icon: Zap,       color: '#B08304', label: 'Groq LLaMA 3',    sub: 'Fastest open-source LLM inference' },
-  { icon: BarChart3, color: '#B08304', label: 'IBM Watson NLU',   sub: 'Enterprise tone & emotion analysis' },
-  { icon: Shield,    color: '#B08304', label: 'Secure by default', sub: 'JWT auth, zero data retention' },
+  { icon: Zap, color: '#B08304', label: 'Groq LLaMA 3', sub: 'Fastest open-source LLM inference' },
+  { icon: BarChart3, color: '#B08304', label: 'IBM Watson NLU', sub: 'Enterprise tone & emotion analysis' },
+  { icon: Shield, color: '#B08304', label: 'Secure by default', sub: 'JWT auth, zero data retention' },
 ];
 
 const TESTIMONIALS = [
@@ -128,8 +127,6 @@ type ContactForm = z.infer<typeof contactSchema>;
 
 /* ════════════════════════════════════════ */
 export default function Landing() {
-  const { loginAsDemo, loading: demoLoading } = useDemoLogin();
-
   const [contactLoading, setContactLoading] = useState(false);
   const { register, handleSubmit, reset, formState: { errors } } = useForm<ContactForm>({
     resolver: zodResolver(contactSchema),
@@ -393,7 +390,7 @@ export default function Landing() {
                   </div>
                   <div className="l-contact__card-details">
                     <h3>Location</h3>
-                    <p>San Francisco, CA</p>
+                    <p>India,Jharkhad </p>
                   </div>
                 </div>
               </div>
