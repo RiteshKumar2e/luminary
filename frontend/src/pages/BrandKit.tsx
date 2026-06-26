@@ -20,6 +20,13 @@ const brandKitSchema = z.object({
 
 type BrandKitForm = z.infer<typeof brandKitSchema>;
 
+function extractHexColors(text: string): string[] {
+  const hexPattern = /#([a-fA-F0-9]{6}|[a-fA-F0-9]{3})\b/g;
+  const matches = text.match(hexPattern);
+  if (!matches) return [];
+  return Array.from(new Set(matches)).map((c) => c.toUpperCase());
+}
+
 const INDUSTRIES = ['Technology', 'Fashion', 'Food & Beverage', 'Health & Wellness', 'Finance', 'Education', 'Entertainment', 'Travel', 'Real Estate', 'Retail', 'Non-profit', 'Other'];
 
 export default function BrandKit() {
@@ -178,6 +185,22 @@ export default function BrandKit() {
                 </div>
               </div>
               <pre className="output-text">{result.content}</pre>
+              {(() => {
+                const colors = extractHexColors(result.content);
+                return colors.length > 0 ? (
+                  <div className="visual-palette-panel">
+                    <h3>Generated Brand Color Palette</h3>
+                    <div className="palette-colors">
+                      {colors.map((color) => (
+                        <div key={color} className="color-swatch-wrapper">
+                          <div className="color-swatch" style={{ backgroundColor: color }} />
+                          <span className="color-hex">{color}</span>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                ) : null;
+              })()}
               {result.analysis && <div className="output-analysis"><WatsonBadge analysis={result.analysis} /></div>}
             </motion.div>
           )}
