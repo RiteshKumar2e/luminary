@@ -333,29 +333,7 @@ export default function Landing() {
         </div>
       </section>
 
-      {/* ── CTA ── */}
-      <section className="l-cta">
-        <div className="container">
-          <motion.div
-            className="l-cta__box"
-            initial={{ opacity: 0, scale: 0.96 }}
-            whileInView={{ opacity: 1, scale: 1 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.5 }}
-          >
-            <h2>Ready to transform your content?</h2>
-            <p>Join thousands of creators producing high-quality content in seconds.</p>
-            <div className="l-cta__actions">
-              <Link to="/register" className="btn btn-primary btn-lg">
-                Get Started Free <ArrowRight size={16} />
-              </Link>
-              <button className="btn-ghost-cta" onClick={loginAsDemo} disabled={demoLoading}>
-                {demoLoading ? <span className="spinner spinner-light" /> : 'Explore Live Demo →'}
-              </button>
-            </div>
-          </motion.div>
-        </div>
-      </section>
+
 
     </div>
   );
