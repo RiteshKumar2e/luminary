@@ -26,6 +26,10 @@ function App() {
           {/* Public landing layout */}
           <Route element={<LandingLayout />}>
             <Route path="/" element={<Landing />} />
+            <Route path="/about" element={<Landing />} />
+            <Route path="/how-it-works" element={<Landing />} />
+            <Route path="/features" element={<Landing />} />
+            <Route path="/contact" element={<Landing />} />
           </Route>
 
           {/* Auth-only (redirect if logged in) */}

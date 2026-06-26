@@ -3,11 +3,11 @@ import { Link, useLocation } from 'react-router-dom';
 import '../styles/Navbar.css';
 
 const NAV_LINKS = [
-  { label: 'Home', href: '/#home' },
-  { label: 'About', href: '/#about' },
-  { label: 'How It Works', href: '/#how-it-works' },
-  { label: 'Features', href: '/#features' },
-  { label: 'Contact', href: '/#contact' },
+  { label: 'Home', href: '/' },
+  { label: 'About', href: '/about' },
+  { label: 'How It Works', href: '/how-it-works' },
+  { label: 'Features', href: '/features' },
+  { label: 'Contact', href: '/contact' },
 ];
 
 export function LandingNavbar() {
@@ -33,9 +33,9 @@ export function LandingNavbar() {
 
         <nav className={`landing-navbar__links${menuOpen ? ' open' : ''}`}>
           {NAV_LINKS.map((link) => (
-            <a key={link.label} href={link.href} className="landing-navbar__link">
+            <Link key={link.label} to={link.href} className="landing-navbar__link">
               {link.label}
-            </a>
+            </Link>
           ))}
         </nav>
 

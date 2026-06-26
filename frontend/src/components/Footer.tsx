@@ -160,14 +160,14 @@ export function Footer() {
         <div className="footer__grid">
           <div className="footer__col">
             <h4>Product</h4>
-            <a href="/#features">Features</a>
-            <a href="/#how-it-works">How It Works</a>
+            <Link to="/features">Features</Link>
+            <Link to="/how-it-works">How It Works</Link>
             <Link to="/register">Get Started</Link>
           </div>
           <div className="footer__col">
             <h4>Company</h4>
-            <a href="/#about">About</a>
-            <a href="/#contact">Contact</a>
+            <Link to="/about">About</Link>
+            <Link to="/contact">Contact</Link>
           </div>
           <div className="footer__col">
             <h4>Tools</h4>

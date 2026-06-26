@@ -1,5 +1,5 @@
 import { useRef, useEffect, useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import { motion, useInView } from 'framer-motion';
 import {
   Sparkles, BookOpen, Megaphone, Palette,
@@ -127,6 +127,34 @@ type ContactForm = z.infer<typeof contactSchema>;
 
 /* ════════════════════════════════════════ */
 export default function Landing() {
+  const location = useLocation();
+
+  useEffect(() => {
+    const path = location.pathname;
+    let targetId = '';
+    if (path === '/') {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+      return;
+    } else if (path === '/about') {
+      targetId = 'about';
+    } else if (path === '/how-it-works') {
+      targetId = 'how-it-works';
+    } else if (path === '/features') {
+      targetId = 'features';
+    } else if (path === '/contact') {
+      targetId = 'contact';
+    }
+
+    if (targetId) {
+      setTimeout(() => {
+        const element = document.getElementById(targetId);
+        if (element) {
+          element.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+      }, 100);
+    }
+  }, [location.pathname]);
+
   const [contactLoading, setContactLoading] = useState(false);
   const { register, handleSubmit, reset, formState: { errors } } = useForm<ContactForm>({
     resolver: zodResolver(contactSchema),
