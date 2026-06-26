@@ -16,7 +16,7 @@ import BrandKit from './pages/BrandKit';
 import AssetLibrary from './pages/AssetLibrary';
 import History from './pages/History';
 import Settings from './pages/Settings';
-import Contact from './pages/Contact';
+
 
 function App() {
   return (
@@ -26,7 +26,6 @@ function App() {
           {/* Public landing layout */}
           <Route element={<LandingLayout />}>
             <Route path="/" element={<Landing />} />
-            <Route path="/contact" element={<Contact />} />
           </Route>
 
           {/* Auth-only (redirect if logged in) */}
