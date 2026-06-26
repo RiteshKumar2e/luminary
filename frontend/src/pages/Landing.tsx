@@ -5,7 +5,7 @@ import {
   Sparkles, BookOpen, Megaphone, Palette,
   ArrowRight, Zap, Shield, BarChart3,
   CheckCircle2, ChevronRight,
-  FileText, Lightbulb,
+  FileText, Lightbulb, Star,
 } from 'lucide-react';
 import { useDemoLogin } from '../hooks/useDemoLogin';
 import '../styles/Landing.css';
@@ -61,12 +61,12 @@ function AnimSection({ children, className = '' }: { children: React.ReactNode; 
 
 /* ── data ── */
 const FEATURES = [
-  { icon: BookOpen,  title: 'Story Generator',  desc: 'Craft narratives, fiction, and scripts across any genre with AI as your co-author.', color: '#5b6af0', bg: '#eef0fe' },
-  { icon: Megaphone, title: 'Campaign Planner', desc: 'Full marketing campaigns — messaging, hooks, ad headlines, and content calendars.',  color: '#7c5cd8', bg: '#f0ebfc' },
-  { icon: Palette,   title: 'Brand Kit',        desc: 'Brand voice, color palettes, taglines, and messaging pillars — built in minutes.',   color: '#0ea5e9', bg: '#e0f2fe' },
-  { icon: Lightbulb, title: 'Idea Brainstorm',  desc: 'Break creative blocks instantly. Generate original ideas on any topic or brief.',    color: '#f59e0b', bg: '#fffbeb' },
-  { icon: FileText,  title: 'Caption Writer',   desc: 'Platform-optimised captions for Instagram, TikTok, LinkedIn, and Twitter.',          color: '#22c55e', bg: '#f0fdf4' },
-  { icon: Sparkles,  title: 'Script Writer',    desc: 'YouTube videos, podcast intros, ad scripts, and explainer content on demand.',       color: '#ef4444', bg: '#fef2f2' },
+  { icon: BookOpen,  title: 'Story Generator',  desc: 'Craft narratives, fiction, and scripts across any genre with AI as your co-author.', color: '#B08304', bg: '#FFFDE3' },
+  { icon: Megaphone, title: 'Campaign Planner', desc: 'Full marketing campaigns — messaging, hooks, ad headlines, and content calendars.',  color: '#B08304', bg: '#FFFDE3' },
+  { icon: Palette,   title: 'Brand Kit',        desc: 'Brand voice, color palettes, taglines, and messaging pillars — built in minutes.',   color: '#B08304', bg: '#FFFDE3' },
+  { icon: Lightbulb, title: 'Idea Brainstorm',  desc: 'Break creative blocks instantly. Generate original ideas on any topic or brief.',    color: '#B08304', bg: '#FFFDE3' },
+  { icon: FileText,  title: 'Caption Writer',   desc: 'Platform-optimised captions for Instagram, TikTok, LinkedIn, and Twitter.',          color: '#B08304', bg: '#FFFDE3' },
+  { icon: Sparkles,  title: 'Script Writer',    desc: 'YouTube videos, podcast intros, ad scripts, and explainer content on demand.',       color: '#B08304', bg: '#FFFDE3' },
 ];
 
 const HOW = [
@@ -83,9 +83,33 @@ const STATS = [
 ];
 
 const STACK = [
-  { icon: Zap,       color: '#5b6af0', label: 'Groq LLaMA 3',    sub: 'Fastest open-source LLM inference' },
-  { icon: BarChart3, color: '#7c5cd8', label: 'IBM Watson NLU',   sub: 'Enterprise tone & emotion analysis' },
-  { icon: Shield,    color: '#22c55e', label: 'Secure by default', sub: 'JWT auth, zero data retention' },
+  { icon: Zap,       color: '#B08304', label: 'Groq LLaMA 3',    sub: 'Fastest open-source LLM inference' },
+  { icon: BarChart3, color: '#B08304', label: 'IBM Watson NLU',   sub: 'Enterprise tone & emotion analysis' },
+  { icon: Shield,    color: '#B08304', label: 'Secure by default', sub: 'JWT auth, zero data retention' },
+];
+
+const TESTIMONIALS = [
+  {
+    quote: "Luminary helped us launch 3 campaigns in a week. The Watson scoring gives us full confidence in our brand voice.",
+    author: "Sarah Jenkins",
+    role: "Head of Content, GrowthFlow",
+    rating: 5,
+    avatar: "S"
+  },
+  {
+    quote: "As a solo writer, the Story Generator is my ultimate co-author. It breaks creative blocks instantly.",
+    author: "Marcus Chen",
+    role: "Novelist & Scriptwriter",
+    rating: 5,
+    avatar: "M"
+  },
+  {
+    quote: "The speed is mind-blowing. LLaMA 3 produces quality captions and headlines in under three seconds.",
+    author: "Elena Rostova",
+    role: "Social Media Strategist",
+    rating: 5,
+    avatar: "E"
+  }
 ];
 
 /* ════════════════════════════════════════ */
@@ -130,11 +154,15 @@ export default function Landing() {
             </motion.div>
 
             <motion.div variants={fadeUp} custom={4} className="l-hero__proof">
-              {['No credit card required', 'Free plan available', 'Instant access'].map(t => (
-                <span key={t} className="proof-item">
-                  <CheckCircle2 size={13} /> {t}
-                </span>
-              ))}
+              <div className="avatar-group">
+                <span className="avatar" style={{ backgroundColor: '#D97706', color: '#fff' }}>S</span>
+                <span className="avatar" style={{ backgroundColor: '#2563EB', color: '#fff' }}>M</span>
+                <span className="avatar" style={{ backgroundColor: '#059669', color: '#fff' }}>E</span>
+                <span className="avatar-plus">+10k</span>
+              </div>
+              <span className="proof-text">
+                <strong>10,000+ creators</strong> &amp; marketers trust Luminary
+              </span>
             </motion.div>
           </motion.div>
         </div>
@@ -145,10 +173,10 @@ export default function Landing() {
         <div className="container l-techbar__inner">
           <span className="l-techbar__label">Powered by</span>
           {['Groq', 'IBM Watson', 'React 18', 'FastAPI', 'SQLAlchemy'].map((t, i, arr) => (
-            <>
-              <span key={t} className="l-techbar__name">{t}</span>
-              {i < arr.length - 1 && <span key={`sep-${t}`} className="l-techbar__sep">·</span>}
-            </>
+            <span key={t} style={{ display: 'inline-flex', alignItems: 'center' }}>
+              <span className="l-techbar__name">{t}</span>
+              {i < arr.length - 1 && <span className="l-techbar__sep">·</span>}
+            </span>
           ))}
         </div>
       </div>
@@ -268,7 +296,66 @@ export default function Landing() {
         </div>
       </section>
 
+      {/* ── TESTIMONIALS ── */}
+      <section className="l-testimonials" id="testimonials">
+        <div className="container">
+          <AnimSection className="l-section-head">
+            <motion.p variants={fadeUp} custom={0} className="section-eyebrow">Testimonials</motion.p>
+            <motion.h2 variants={fadeUp} custom={1}>Loved by modern creators</motion.h2>
+          </AnimSection>
 
+          <div className="l-testimonials__grid">
+            {TESTIMONIALS.map((t, i) => (
+              <motion.div
+                key={t.author}
+                className="testimonial-card"
+                initial={{ opacity: 0, y: 16 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true, margin: '-32px' }}
+                transition={{ delay: i * 0.08, duration: 0.45, ease: [0.22, 1, 0.36, 1] }}
+              >
+                <div className="testimonial-card__stars">
+                  {[...Array(t.rating)].map((_, idx) => (
+                    <Star key={idx} size={14} fill="#FFCE25" color="#FFCE25" />
+                  ))}
+                </div>
+                <p className="testimonial-card__quote">"{t.quote}"</p>
+                <div className="testimonial-card__author">
+                  <div className="testimonial-card__avatar">{t.avatar}</div>
+                  <div>
+                    <h4>{t.author}</h4>
+                    <span>{t.role}</span>
+                  </div>
+                </div>
+              </motion.div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ── CTA ── */}
+      <section className="l-cta">
+        <div className="container">
+          <motion.div
+            className="l-cta__box"
+            initial={{ opacity: 0, scale: 0.96 }}
+            whileInView={{ opacity: 1, scale: 1 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.5 }}
+          >
+            <h2>Ready to transform your content?</h2>
+            <p>Join thousands of creators producing high-quality content in seconds.</p>
+            <div className="l-cta__actions">
+              <Link to="/register" className="btn btn-primary btn-lg">
+                Get Started Free <ArrowRight size={16} />
+              </Link>
+              <button className="btn-ghost-cta" onClick={loginAsDemo} disabled={demoLoading}>
+                {demoLoading ? <span className="spinner spinner-light" /> : 'Explore Live Demo →'}
+              </button>
+            </div>
+          </motion.div>
+        </div>
+      </section>
 
     </div>
   );
