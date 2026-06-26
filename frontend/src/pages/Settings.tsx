@@ -16,7 +16,7 @@ const profileSchema = z.object({
 
 const passwordSchema = z.object({
   current_password: z.string().min(1),
-  new_password: z.string().min(8, 'Min 8 characters'),
+  new_password: z.string().min(6, 'Password must be 6-10 characters').max(10, 'Password must be 6-10 characters'),
   confirm_password: z.string(),
 }).refine((d) => d.new_password === d.confirm_password, {
   message: 'Passwords do not match',
