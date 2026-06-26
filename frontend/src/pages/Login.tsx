@@ -4,7 +4,7 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import toast from 'react-hot-toast';
-import { Mail, Lock, ArrowRight, ArrowLeft, Zap } from 'lucide-react';
+import { Mail, Lock, ArrowRight, ArrowLeft, Zap, Eye, EyeOff } from 'lucide-react';
 import { authService } from '../services/authService';
 import { useAuth } from '../context/AuthContext';
 import { useDemoLogin } from '../hooks/useDemoLogin';
@@ -18,6 +18,7 @@ const loginSchema = z.object({
 
 export default function Login() {
   const [loading, setLoading] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
   const { login } = useAuth();
   const navigate = useNavigate();
   const { loginAsDemo, loading: demoLoading } = useDemoLogin();
@@ -98,13 +99,23 @@ export default function Login() {
             <label htmlFor="password" className="form-label">
               <Lock size={14} /> Password
             </label>
-            <input
-              {...register('password')}
-              id="password"
-              type="password"
-              placeholder="••••••••"
-              className={`form-input${errors.password ? ' error' : ''}`}
-            />
+            <div className="password-input-container">
+              <input
+                {...register('password')}
+                id="password"
+                type={showPassword ? 'text' : 'password'}
+                placeholder="••••••••"
+                className={`form-input${errors.password ? ' error' : ''}`}
+              />
+              <button
+                type="button"
+                className="password-toggle-btn"
+                onClick={() => setShowPassword(!showPassword)}
+                aria-label={showPassword ? 'Hide password' : 'Show password'}
+              >
+                {showPassword ? <EyeOff size={16} /> : <Eye size={16} />}
+              </button>
+            </div>
             {errors.password && <span className="form-error">{errors.password.message}</span>}
           </div>
 
