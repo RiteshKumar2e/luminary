@@ -6,12 +6,54 @@ import logging
 logger = logging.getLogger(__name__)
 
 
+GROQ_MODEL_FALLBACKS: List[str] = [
+    "llama-3.3-70b-versatile",
+    "llama-3.1-70b-versatile",
+    "llama3-70b-8192",
+    "llama-3.1-8b-instant",
+    "llama3-8b-8192",
+    "llama-3.2-90b-vision-preview",
+    "llama-3.2-11b-vision-preview",
+    "llama-3.2-3b-preview",
+    "llama-3.2-1b-preview",
+    "llama-guard-3-8b",
+    "llama3-groq-70b-8192-tool-use-preview",
+    "llama3-groq-8b-8192-tool-use-preview",
+    "mixtral-8x7b-32768",
+    "gemma2-9b-it",
+    "gemma-7b-it",
+    "whisper-large-v3",
+    "whisper-large-v3-turbo",
+    "distil-whisper-large-v3-en",
+    "llava-v1.5-7b-4096-preview",
+    "playai-tts",
+    "playai-tts-arabic",
+    "qwen-qwq-32b",
+    "qwen-2.5-coder-32b",
+    "qwen-2.5-32b",
+    "deepseek-r1-distill-llama-70b",
+    "deepseek-r1-distill-qwen-32b",
+    "mistral-saba-24b",
+    "allam-2-7b",
+    "meta-llama/llama-4-scout-17b-16e-instruct",
+    "meta-llama/llama-4-maverick-17b-128e-instruct",
+]
+
+
 class GroqService:
-    """Groq LLM integration for fast creative content generation."""
+    """Groq LLM integration with automatic model fallback chain."""
 
     def __init__(self):
         self.api_key = settings.GROQ_API_KEY
-        self.model = settings.GROQ_MODEL
+        # Prefer the configured model; prepend it so it's tried first
+        configured = settings.GROQ_MODEL
+        if configured and configured not in GROQ_MODEL_FALLBACKS:
+            self._model_queue = [configured] + GROQ_MODEL_FALLBACKS
+        else:
+            # Move configured model to front if present in list
+            others = [m for m in GROQ_MODEL_FALLBACKS if m != configured]
+            self._model_queue = ([configured] if configured else []) + others
+        self.model = self._model_queue[0]  # active model (updated on fallback)
         self._client: Optional[Groq] = None
         self._available = bool(self.api_key)
 
@@ -20,6 +62,46 @@ class GroqService:
         if not self._client:
             self._client = Groq(api_key=self.api_key)
         return self._client
+
+    def _is_model_error(self, error: Exception) -> bool:
+        msg = str(error).lower()
+        return any(k in msg for k in ("decommissioned", "model_not_found", "does not exist", "invalid model", "no longer supported"))
+
+    async def _call_with_fallback(
+        self,
+        messages: List[Dict[str, str]],
+        temperature: float,
+        max_tokens: int,
+    ) -> Dict[str, Any]:
+        """Try each model in the fallback chain until one succeeds."""
+        for model in self._model_queue:
+            try:
+                response = self.client.chat.completions.create(
+                    model=model,
+                    messages=messages,
+                    temperature=temperature,
+                    max_tokens=max_tokens,
+                )
+                if model != self.model:
+                    logger.info(f"Groq fallback succeeded with model: {model}")
+                    self.model = model  # remember working model for logs
+                content = response.choices[0].message.content
+                usage = response.usage
+                return {
+                    "content": content,
+                    "tokens_used": usage.total_tokens if usage else 0,
+                    "model": model,
+                    "success": True,
+                }
+            except Exception as e:
+                if self._is_model_error(e):
+                    logger.warning(f"Model '{model}' unavailable, trying next fallback. ({e})")
+                    continue
+                # Non-model error (rate limit, network, etc.) — bail immediately
+                logger.error(f"Groq error with model '{model}': {e}")
+                break
+
+        return self._mock_response("fallback exhausted")
 
     async def generate(
         self,
@@ -32,29 +114,12 @@ class GroqService:
             logger.warning("Groq not configured — returning mock content.")
             return self._mock_response(prompt)
 
-        messages = []
+        messages: List[Dict[str, str]] = []
         if system_prompt:
             messages.append({"role": "system", "content": system_prompt})
         messages.append({"role": "user", "content": prompt})
 
-        try:
-            response = self.client.chat.completions.create(
-                model=self.model,
-                messages=messages,
-                temperature=temperature,
-                max_tokens=max_tokens,
-            )
-            content = response.choices[0].message.content
-            usage = response.usage
-            return {
-                "content": content,
-                "tokens_used": usage.total_tokens if usage else 0,
-                "model": self.model,
-                "success": True,
-            }
-        except Exception as e:
-            logger.error(f"Groq generation error: {e}")
-            return self._mock_response(prompt)
+        return await self._call_with_fallback(messages, temperature, max_tokens)
 
     async def generate_story(
         self,
@@ -263,24 +328,10 @@ Number each idea. Be original and specific — no generic suggestions."""
         if not self._available:
             return self._mock_chat_response(messages[-1]["content"] if messages else "")
 
-        try:
-            response = self.client.chat.completions.create(
-                model=self.model,
-                messages=full_messages,
-                temperature=0.88,
-                max_tokens=1024,
-            )
-            content = response.choices[0].message.content
-            usage = response.usage
-            return {
-                "content": content,
-                "tokens_used": usage.total_tokens if usage else 0,
-                "model": self.model,
-                "success": True,
-            }
-        except Exception as e:
-            logger.error(f"Groq chat error: {e}")
+        result = await self._call_with_fallback(full_messages, temperature=0.88, max_tokens=1024)
+        if not result["success"]:
             return self._mock_chat_response(messages[-1]["content"] if messages else "")
+        return result
 
     def _mock_chat_response(self, last_message: str) -> Dict[str, Any]:
         return {
