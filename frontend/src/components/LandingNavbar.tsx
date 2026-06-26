@@ -40,8 +40,8 @@ export function LandingNavbar() {
         </nav>
 
         <div className="landing-navbar__actions">
-          <Link to="/login" className="btn btn-ghost">Log in</Link>
-          <Link to="/register" className="btn btn-primary">Get Started</Link>
+          <Link to="/login" className="btn btn-ghost">Sign In</Link>
+          <Link to="/register" className="btn btn-primary">Register</Link>
         </div>
 
         <button

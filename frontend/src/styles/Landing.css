@@ -72,8 +72,6 @@
    ══════════════════════════════ */
 .l-hero {
   background-color: var(--l-bg);
-  background-image: radial-gradient(var(--l-bg-dot) 1.5px, transparent 1.5px);
-  background-size: 24px 24px;
   border-bottom: 1px solid var(--l-border);
   padding: 104px 0 96px;
   text-align: center;

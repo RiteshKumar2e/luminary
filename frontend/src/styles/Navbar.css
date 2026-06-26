@@ -8,15 +8,13 @@
   left: 0;
   right: 0;
   z-index: 100;
-  background: rgba(255, 253, 244, 0.88); /* Matching --l-bg cream tint */
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  border-bottom: 1px solid transparent;
-  transition: all var(--transition-base);
+  background: var(--l-bg, #FFFDF4); /* Solid matching theme background */
+  border-top: 4px solid var(--l-accent, #F4BE1A); /* Top golden border from portal */
+  border-bottom: 1px solid var(--l-border, #EADBB6);
+  transition: all var(--transition-base, 0.2s);
 }
 
 .landing-navbar.scrolled {
-  border-bottom-color: var(--l-border);
   box-shadow: 0 4px 20px -10px rgba(184, 153, 90, 0.15);
 }
 
@@ -34,15 +32,15 @@
   align-items: center;
   gap: 8px;
   font-weight: 800;
-  font-size: var(--text-lg);
-  color: var(--l-ink);
+  font-size: var(--text-lg, 18px);
+  color: var(--l-ink, #1E1B15);
   text-decoration: none;
   flex: 1;
   min-width: 0;
 }
 
 .landing-navbar__logo .logo-mark {
-  color: var(--l-accent); /* Golden star mark */
+  color: var(--l-accent, #F4BE1A); /* Golden star mark */
   font-size: 22px;
 }
 
@@ -54,23 +52,25 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 4px;
+  gap: 8px;
   flex-shrink: 0;
 }
 
 .landing-navbar__link {
   padding: 8px 16px;
-  font-size: var(--text-sm);
-  font-weight: 600;
-  color: var(--l-ink-2);
-  border-radius: 8px;
-  transition: all var(--transition-fast);
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--l-ink-2, #4A463D);
+  text-transform: uppercase; /* Uppercase links from portal */
+  letter-spacing: 0.08em;
+  border-radius: 6px;
+  transition: all var(--transition-fast, 0.15s);
   white-space: nowrap;
 }
 
 .landing-navbar__link:hover {
-  color: var(--l-ink);
-  background: var(--l-warm);
+  color: var(--l-ink, #1E1B15);
+  background: var(--l-warm, #FAF7EC);
 }
 
 .landing-navbar__actions {
@@ -82,27 +82,47 @@
   min-width: 0;
 }
 
-.landing-navbar__actions .btn-primary {
-  background: var(--l-accent);
-  color: var(--l-ink);
-  border-color: var(--l-accent);
-  font-weight: 700;
-  box-shadow: 0 2px 8px rgba(244, 190, 26, 0.2);
-}
-
-.landing-navbar__actions .btn-primary:hover {
-  background: var(--l-accent-hover);
-  border-color: var(--l-accent-hover);
-}
-
+/* Sign In Outlined Button */
 .landing-navbar__actions .btn-ghost {
-  color: var(--l-text-gold);
-  font-weight: 600;
+  background: #ffffff;
+  border: 1.5px solid var(--l-accent, #F4BE1A);
+  border-radius: 6px;
+  color: var(--l-text-gold, #946E00);
+  font-weight: 700;
+  font-size: 13px;
+  padding: 8px 20px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all var(--transition-fast, 0.15s);
 }
 
 .landing-navbar__actions .btn-ghost:hover {
-  background: var(--l-accent-light);
-  color: var(--l-ink);
+  background: var(--l-accent-light, #FFFDF0);
+  color: var(--l-ink, #1E1B15);
+}
+
+/* Register Solid Button */
+.landing-navbar__actions .btn-primary {
+  background: #0F172A; /* Deep navy-blue button from portal */
+  color: #ffffff;
+  border: 1.5px solid #0F172A;
+  border-radius: 6px;
+  font-weight: 700;
+  font-size: 13px;
+  padding: 8px 20px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all var(--transition-fast, 0.15s);
+  box-shadow: none;
+}
+
+.landing-navbar__actions .btn-primary:hover {
+  background: #1E293B;
+  border-color: #1E293B;
 }
 
 .landing-navbar__hamburger {
@@ -119,20 +139,21 @@
   display: block;
   width: 22px;
   height: 2px;
-  background: var(--l-ink);
+  background: var(--l-ink, #1E1B15);
   border-radius: 2px;
-  transition: transform var(--transition-base);
+  transition: transform var(--transition-base, 0.2s);
 }
 
 @media (max-width: 768px) {
   .landing-navbar__links {
     display: none;
     position: fixed;
-    top: 68px;
+    top: 72px;
     left: 0;
     right: 0;
-    background: var(--l-bg);
-    border-bottom: 1px solid var(--l-border);
+    background: var(--l-bg, #FFFDF4);
+    border-top: 1px solid var(--l-border, #EADBB6);
+    border-bottom: 1px solid var(--l-border, #EADBB6);
     flex-direction: column;
     padding: 20px;
     gap: 4px;
