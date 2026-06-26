@@ -25,6 +25,8 @@ async def lifespan(app: FastAPI):
     Base.metadata.create_all(bind=engine)
     os.makedirs(settings.UPLOAD_DIR, exist_ok=True)
     logger.info("Database tables created / verified.")
+    logger.info(f"Groq API: {'CONFIGURED' if settings.GROQ_API_KEY else 'NOT SET — demo mode'}")
+    logger.info(f"Watson NLU: {'CONFIGURED' if settings.WATSON_NLU_API_KEY else 'NOT SET — mock analysis'}")
     yield
     logger.info("Shutting down.")
 
