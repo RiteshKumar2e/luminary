@@ -50,7 +50,7 @@ export default function Contact() {
             <div className="contact-info-card">
               <MapPin size={20} />
               <h3>Location</h3>
-              <p>San Francisco, CA</p>
+              <p>India,Jharkhand </p>
             </div>
           </div>
 
