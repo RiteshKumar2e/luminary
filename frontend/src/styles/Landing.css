@@ -146,16 +146,19 @@
 }
 
 .landing .btn-primary {
-  background: var(--l-accent);
-  color: var(--l-ink);
-  border-color: var(--l-accent);
+  background: #F4BE1A !important;
+  color: #1a1200 !important;
+  border-color: #F4BE1A !important;
   font-weight: 700;
   box-shadow: 0 4px 14px rgba(244, 190, 26, 0.25);
 }
 
-.landing .btn-primary:hover {
-  background: var(--l-accent);
-  border-color: var(--l-accent);
+.landing .btn-primary:hover,
+.landing .btn-primary:active,
+.landing .btn-primary:focus {
+  background: #F4BE1A !important;
+  border-color: #F4BE1A !important;
+  color: #1a1200 !important;
   transform: translateY(-1px);
 }
 
