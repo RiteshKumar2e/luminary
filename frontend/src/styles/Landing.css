@@ -154,8 +154,8 @@
 }
 
 .landing .btn-primary:hover {
-  background: var(--l-accent-hover);
-  border-color: var(--l-accent-hover);
+  background: var(--l-accent);
+  border-color: var(--l-accent);
   transform: translateY(-1px);
 }
 
@@ -784,7 +784,7 @@
 }
 
 .l-contact__form .btn-primary:hover {
-  background: var(--l-accent-hover);
+  background: var(--l-accent);
   transform: translateY(-1px);
 }
 
