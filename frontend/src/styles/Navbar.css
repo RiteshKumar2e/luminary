@@ -105,9 +105,9 @@
 
 /* Register Solid Button */
 .landing-navbar__actions .btn-primary {
-  background: #0F172A; /* Deep navy-blue button from portal */
-  color: #ffffff;
-  border: 1.5px solid #0F172A;
+  background: #F4BE1A !important;
+  color: #1a1200 !important;
+  border: 1.5px solid #F4BE1A !important;
   border-radius: 6px;
   font-weight: 700;
   font-size: 13px;
@@ -117,12 +117,15 @@
   justify-content: center;
   cursor: pointer;
   transition: all var(--transition-fast, 0.15s);
-  box-shadow: none;
+  box-shadow: 0 2px 8px rgba(244, 190, 26, 0.30);
 }
 
-.landing-navbar__actions .btn-primary:hover {
-  background: #0F172A;
-  border-color: #0F172A;
+.landing-navbar__actions .btn-primary:hover,
+.landing-navbar__actions .btn-primary:active,
+.landing-navbar__actions .btn-primary:focus {
+  background: #F4BE1A !important;
+  border-color: #F4BE1A !important;
+  color: #1a1200 !important;
 }
 
 .landing-navbar__hamburger {
