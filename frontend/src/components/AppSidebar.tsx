@@ -2,6 +2,7 @@ import { NavLink, useNavigate } from 'react-router-dom';
 import {
   LayoutDashboard, Sparkles, BookOpen, Megaphone,
   Palette, Archive, Clock, Settings, LogOut, MessageCircleHeart,
+  Workflow, BarChart3
 } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import '../styles/AppSidebar.css';
@@ -11,7 +12,9 @@ const NAV = [
   { to: '/muse', icon: MessageCircleHeart, label: 'Creative Muse' },
   { to: '/studio', icon: Sparkles, label: 'Creative Studio' },
   { to: '/story', icon: BookOpen, label: 'Story Generator' },
+  { to: '/plot-architect', icon: Workflow, label: 'Plot Architect' },
   { to: '/campaign', icon: Megaphone, label: 'Campaign Planner' },
+  { to: '/campaign-tester', icon: BarChart3, label: 'A/B Tester' },
   { to: '/brand-kit', icon: Palette, label: 'Brand Kit' },
   { to: '/assets', icon: Archive, label: 'Asset Library' },
   { to: '/history', icon: Clock, label: 'History' },

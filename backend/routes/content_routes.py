@@ -10,6 +10,9 @@ from schemas.content import (
     ScriptRequest,
     AnalysisRequest,
     ChatRequest,
+    StoryBranchRequest,
+    ABTestRequest,
+    ABGenerateRequest,
 )
 from controllers.content_controller import (
     generate_story,
@@ -24,6 +27,9 @@ from controllers.content_controller import (
     chat_with_muse,
     get_style_profile,
     get_mood_board,
+    generate_story_branch,
+    run_ab_test,
+    generate_ab_variant,
 )
 from auth.dependencies import get_current_user
 from models.user import User
@@ -138,3 +144,31 @@ async def mood_board(
     current_user: User = Depends(get_current_user),
 ):
     return await get_mood_board(keywords)
+
+
+@router.post("/story/branch")
+async def story_branch(
+    payload: StoryBranchRequest,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user),
+):
+    return await generate_story_branch(payload, current_user, db)
+
+
+@router.post("/campaign/test")
+async def campaign_test(
+    payload: ABTestRequest,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user),
+):
+    return await run_ab_test(payload, current_user, db)
+
+
+@router.post("/campaign/generate-variant")
+async def campaign_generate_variant(
+    payload: ABGenerateRequest,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user),
+):
+    return await generate_ab_variant(payload, current_user, db)
+

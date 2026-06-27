@@ -97,3 +97,26 @@ class ChatMessage(BaseModel):
 class ChatRequest(BaseModel):
     messages: List[ChatMessage] = Field(..., min_length=1)
     context: Optional[str] = None  # recent generation context to inject
+
+
+class StoryBranchRequest(BaseModel):
+    genre: str = "general"
+    tone: str = "neutral"
+    characters: Optional[List[str]] = None
+    setting: Optional[str] = None
+    previous_segments: List[str] = Field(default_factory=list)
+    choices_made: List[str] = Field(default_factory=list)
+    selected_choice: str = Field(..., min_length=1)
+
+
+class ABTestRequest(BaseModel):
+    campaign_topic: str
+    variant_a: str
+    variant_b: str
+    target_persona: str
+
+
+class ABGenerateRequest(BaseModel):
+    variant_a: str
+    tone_or_style: str = "punchy"
+

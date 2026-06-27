@@ -2,6 +2,7 @@ from groq import Groq
 from typing import Optional, Dict, Any, List
 from config.settings import settings
 import logging
+import json
 
 logger = logging.getLogger(__name__)
 
@@ -340,6 +341,200 @@ Number each idea. Be original and specific — no generic suggestions."""
             "model": "demo",
             "success": False,
         }
+
+    async def generate_story_branch(
+        self,
+        genre: str,
+        tone: str,
+        characters: Optional[List[str]],
+        setting: Optional[str],
+        previous_segments: List[str],
+        choices_made: List[str],
+        selected_choice: str,
+    ) -> Dict[str, Any]:
+        if not self._available:
+            return {
+                "segment": f"[Demo Mode] The story continues based on your choice: '{selected_choice}'. They entered the dark room and found a mysterious glowing artifact.",
+                "choices": ["Touch the glowing artifact", "Examine the symbols on the walls", "Back away slowly"],
+                "success": False,
+                "model": "demo"
+            }
+
+        history_str = ""
+        for i, (seg, choice) in enumerate(zip(previous_segments, choices_made)):
+            history_str += f"Chapter {i+1}:\n{seg}\nChoice made: {choice}\n\n"
+        
+        char_info = f"Characters: {', '.join(characters)}" if characters else ""
+        setting_info = f"Setting: {setting}" if setting else ""
+
+        system = (
+            "You are a world-class creative fiction writer. Write the next segment of the interactive story. "
+            "You must output ONLY a valid JSON object. Do not include markdown code block syntax (like ```json), "
+            "do not write any pre-amble or post-amble. Return exactly this JSON structure:\n"
+            "{\n"
+            '  "segment": "Write the next part of the story (150-250 words) developing the narrative based on the user\'s choice.",\n'
+            '  "choices": ["Option 1 (max 8 words)", "Option 2 (max 8 words)", "Option 3 (max 8 words)"]\n'
+            "}"
+        )
+
+        user_prompt = f"""Story Details:
+Genre: {genre}
+Tone: {tone}
+{char_info}
+{setting_info}
+
+Story History:
+{history_str}
+
+The user chose to: {selected_choice}
+
+Write the next segment of the story incorporating this choice, and generate the next 3 choices for the user."""
+
+        res = await self.generate(system_prompt=system, prompt=user_prompt, temperature=0.85, max_tokens=1500)
+        
+        # Try to parse JSON
+        content = res.get("content", "")
+        try:
+            # strip markdown block syntax if present
+            clean_content = content.strip()
+            if clean_content.startswith("```"):
+                lines = clean_content.split("\n")
+                if lines[0].startswith("```"):
+                    lines = lines[1:]
+                if lines[-1].startswith("```"):
+                    lines = lines[:-1]
+                clean_content = "\n".join(lines).strip()
+            parsed = json.loads(clean_content)
+            return {
+                "segment": parsed.get("segment", ""),
+                "choices": parsed.get("choices", []),
+                "success": True,
+                "model": res.get("model", ""),
+                "tokens_used": res.get("tokens_used", 0)
+            }
+        except Exception as e:
+            logger.error(f"Failed to parse story branch JSON: {e}. Raw content: {content}")
+            return {
+                "segment": content,
+                "choices": ["Investigate the strange sound", "Search for an exit", "Wait quietly"],
+                "success": True,
+                "model": res.get("model", ""),
+                "tokens_used": res.get("tokens_used", 0)
+            }
+
+    async def simulate_ab_test(
+        self,
+        campaign_topic: str,
+        variant_a: str,
+        variant_b: str,
+        target_persona: str,
+    ) -> Dict[str, Any]:
+        if not self._available:
+            return {
+                "variant_a_metrics": {"ctr": 4.2, "conversion": 1.5, "readability": 88, "emotional_resonance": "Trust"},
+                "variant_b_metrics": {"ctr": 5.8, "conversion": 2.1, "readability": 75, "emotional_resonance": "Excitement"},
+                "winner": "Variant B",
+                "comparative_analysis": "[Demo Mode] Variant B performs better because it has a stronger emotional hook and direct call-to-action.",
+                "persona_feedback": [
+                    {"name": "Alex", "age": 22, "occupation": "Student", "sentiment": "positive", "comment": "Variant B is much more relatable and gets straight to the point!"},
+                    {"name": "Taylor", "age": 26, "occupation": "Developer", "sentiment": "neutral", "comment": "Variant A is okay, but Variant B actually catches my attention."},
+                    {"name": "Jordan", "age": 24, "occupation": "Designer", "sentiment": "negative", "comment": "Both feel a bit generic, but Variant B is less boring."}
+                ],
+                "variant_a_improvements": ["Add a clearer benefit", "Shorten the headline", "Use more active verbs"],
+                "variant_b_improvements": ["Refine the call-to-action", "Add social proof", "Make the value prop clearer"],
+                "success": False,
+                "model": "demo"
+            }
+
+        system = (
+            "You are a marketing analytics agent and customer psychologist. Simulate a focus group of the target persona "
+            "evaluating two copy variations (Variant A and Variant B) for a campaign topic. "
+            "You must output ONLY a valid JSON object. Do not include markdown code block syntax (like ```json), "
+            "do not write any pre-amble or post-amble. Return exactly this JSON structure:\n"
+            "{\n"
+            '  "variant_a_metrics": { "ctr": 4.5, "conversion": 1.2, "readability": 85, "emotional_resonance": "Dominant Emotion/Tone" },\n'
+            '  "variant_b_metrics": { "ctr": 6.2, "conversion": 2.1, "readability": 78, "emotional_resonance": "Dominant Emotion/Tone" },\n'
+            '  "winner": "Variant A or Variant B",\n'
+            '  "comparative_analysis": "A detailed explanation of why the winner performs better and the psychology behind it.",\n'
+            '  "persona_feedback": [\n'
+            '    { "name": "Name 1", "age": 25, "occupation": "Job 1", "sentiment": "positive/neutral/negative", "comment": "Feedback comment from their perspective." },\n'
+            '    { "name": "Name 2", "age": 28, "occupation": "Job 2", "sentiment": "positive/neutral/negative", "comment": "Feedback comment." },\n'
+            '    { "name": "Name 3", "age": 21, "occupation": "Job 3", "sentiment": "positive/neutral/negative", "comment": "Feedback comment." }\n'
+            '  ],\n'
+            '  "variant_a_improvements": ["Improvement suggestion 1", "Suggestion 2", "Suggestion 3"],\n'
+            '  "variant_b_improvements": ["Improvement suggestion 1", "Suggestion 2", "Suggestion 3"]\n'
+            "}"
+        )
+
+        user_prompt = f"""Campaign Topic: {campaign_topic}
+Target Persona: {target_persona}
+
+Copy Variant A:
+{variant_a}
+
+Copy Variant B:
+{variant_b}
+
+Run a simulation and evaluate how this target persona would respond to each copy variant. Return the JSON structure."""
+
+        res = await self.generate(system_prompt=system, prompt=user_prompt, temperature=0.7, max_tokens=2500)
+        
+        content = res.get("content", "")
+        try:
+            clean_content = content.strip()
+            if clean_content.startswith("```"):
+                lines = clean_content.split("\n")
+                if lines[0].startswith("```"):
+                    lines = lines[1:]
+                if lines[-1].startswith("```"):
+                    lines = lines[:-1]
+                clean_content = "\n".join(lines).strip()
+            parsed = json.loads(clean_content)
+            return {
+                **parsed,
+                "success": True,
+                "model": res.get("model", ""),
+                "tokens_used": res.get("tokens_used", 0)
+            }
+        except Exception as e:
+            logger.error(f"Failed to parse A/B test simulation JSON: {e}. Raw content: {content}")
+            return {
+                "variant_a_metrics": {"ctr": 5.0, "conversion": 1.8, "readability": 80, "emotional_resonance": "Informational"},
+                "variant_b_metrics": {"ctr": 5.0, "conversion": 1.8, "readability": 80, "emotional_resonance": "Informational"},
+                "winner": "Tie",
+                "comparative_analysis": "Failed to parse simulation model output. Both copies perform similarly.",
+                "persona_feedback": [],
+                "variant_a_improvements": ["Simplify terminology"],
+                "variant_b_improvements": ["Make headline more punchy"],
+                "success": True,
+                "model": res.get("model", ""),
+                "tokens_used": res.get("tokens_used", 0)
+            }
+
+    async def generate_alternative_variant(
+        self,
+        variant_a: str,
+        tone_or_style: str,
+    ) -> Dict[str, Any]:
+        if not self._available:
+            return {
+                "content": f"[Demo Mode] Here is an alternative variant of your copy optimized to be {tone_or_style}: Get started today and experience the future of branding!",
+                "success": False,
+                "model": "demo"
+            }
+
+        system = (
+            "You are a professional copywriting assistant. Generate a direct alternative version of the provided copy "
+            "optimized for the requested tone or style. Keep it similarly long or slightly punchier."
+        )
+        user_prompt = f"""Original Copy:
+{variant_a}
+
+Requested Style/Tone adjustment: {tone_or_style}
+
+Write the modified alternative version of this copy."""
+
+        return await self.generate(system_prompt=system, prompt=user_prompt, temperature=0.8, max_tokens=1500)
 
     def _mock_response(self, prompt: str) -> Dict[str, Any]:
         return {

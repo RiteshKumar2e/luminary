@@ -80,4 +80,60 @@ export const contentService = {
     const res = await api.get<MoodBoardResponse>('/creative/mood-board', { params: { keywords } });
     return res.data;
   },
+
+  async generateStoryBranch(data: {
+    genre: string;
+    tone: string;
+    characters?: string[];
+    setting?: string;
+    previous_segments: string[];
+    choices_made: string[];
+    selected_choice: string;
+  }): Promise<{
+    segment: string;
+    choices: string[];
+    analysis: WatsonAnalysis;
+    tokens_used: number;
+  }> {
+    const res = await api.post<{
+      segment: string;
+      choices: string[];
+      analysis: WatsonAnalysis;
+      tokens_used: number;
+    }>('/creative/story/branch', data);
+    return res.data;
+  },
+
+  async runCampaignTest(data: {
+    campaign_topic: string;
+    variant_a: string;
+    variant_b: string;
+    target_persona: string;
+  }): Promise<{
+    variant_a_metrics: { ctr: number; conversion: number; readability: number; emotional_resonance: string };
+    variant_b_metrics: { ctr: number; conversion: number; readability: number; emotional_resonance: string };
+    winner: string;
+    comparative_analysis: string;
+    persona_feedback: Array<{ name: string; age: number; occupation: string; sentiment: string; comment: string }>;
+    variant_a_improvements: string[];
+    variant_b_improvements: string[];
+  }> {
+    const res = await api.post<any>('/creative/campaign/test', data);
+    return res.data;
+  },
+
+  async generateCampaignVariant(data: {
+    variant_a: string;
+    tone_or_style: string;
+  }): Promise<{
+    content: string;
+    tokens_used: number;
+  }> {
+    const res = await api.post<{
+      content: string;
+      tokens_used: number;
+    }>('/creative/campaign/generate-variant', data);
+    return res.data;
+  },
 };
+

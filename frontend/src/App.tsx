@@ -17,6 +17,8 @@ import AssetLibrary from './pages/AssetLibrary';
 import History from './pages/History';
 import Settings from './pages/Settings';
 import Muse from './pages/Muse';
+import PlotArchitect from './pages/PlotArchitect';
+import CampaignABTester from './pages/CampaignABTester';
 
 
 function App() {
@@ -46,7 +48,9 @@ function App() {
               <Route path="/muse" element={<Muse />} />
               <Route path="/studio" element={<CreativeStudio />} />
               <Route path="/story" element={<StoryGenerator />} />
+              <Route path="/plot-architect" element={<PlotArchitect />} />
               <Route path="/campaign" element={<CampaignPlanner />} />
+              <Route path="/campaign-tester" element={<CampaignABTester />} />
               <Route path="/brand-kit" element={<BrandKit />} />
               <Route path="/assets" element={<AssetLibrary />} />
               <Route path="/history" element={<History />} />

@@ -11,6 +11,9 @@ from schemas.content import (
     ScriptRequest,
     AnalysisRequest,
     ChatRequest,
+    StoryBranchRequest,
+    ABTestRequest,
+    ABGenerateRequest,
 )
 from ai_services.groq_service import groq_service
 from ai_services.watson_service import watson_nlu
@@ -311,3 +314,69 @@ async def get_mood_board(keywords: str):
             })
 
     return {"photos": photos, "query": keywords}
+
+
+async def generate_story_branch(payload: StoryBranchRequest, user: User, db: Session):
+    result = await groq_service.generate_story_branch(
+        genre=payload.genre,
+        tone=payload.tone,
+        characters=payload.characters,
+        setting=payload.setting,
+        previous_segments=payload.previous_segments,
+        choices_made=payload.choices_made,
+        selected_choice=payload.selected_choice,
+    )
+    segment_content = result.get("segment", "")
+    watson = await watson_nlu.analyze_tone(segment_content[:3000])
+
+    await _save_history(
+        db, user.id, "plot_architect", payload.selected_choice, segment_content,
+        watson, result.get("tokens_used", 0), result.get("model", ""),
+    )
+    return {
+        "segment": segment_content,
+        "choices": result.get("choices", []),
+        "analysis": watson,
+        "tokens_used": result.get("tokens_used", 0),
+    }
+
+
+async def run_ab_test(payload: ABTestRequest, user: User, db: Session):
+    result = await groq_service.simulate_ab_test(
+        campaign_topic=payload.campaign_topic,
+        variant_a=payload.variant_a,
+        variant_b=payload.variant_b,
+        target_persona=payload.target_persona,
+    )
+    # Analyze Variant B (or simulated winner text) to contribute to Watson DNA
+    text_to_analyze = payload.variant_b if result.get("winner") == "Variant B" else payload.variant_a
+    watson = await watson_nlu.analyze_tone(text_to_analyze[:3000])
+
+    saved_result = json.dumps({
+        "variant_a_metrics": result.get("variant_a_metrics"),
+        "variant_b_metrics": result.get("variant_b_metrics"),
+        "winner": result.get("winner"),
+        "comparative_analysis": result.get("comparative_analysis"),
+        "persona_feedback": result.get("persona_feedback"),
+        "variant_a_improvements": result.get("variant_a_improvements"),
+        "variant_b_improvements": result.get("variant_b_improvements"),
+    })
+
+    prompt_desc = f"Topic: {payload.campaign_topic} | Persona: {payload.target_persona}"
+    await _save_history(
+        db, user.id, "campaign_ab_test", prompt_desc, saved_result,
+        watson, result.get("tokens_used", 0), result.get("model", ""),
+    )
+    return result
+
+
+async def generate_ab_variant(payload: ABGenerateRequest, user: User, db: Session):
+    result = await groq_service.generate_alternative_variant(
+        variant_a=payload.variant_a,
+        tone_or_style=payload.tone_or_style,
+    )
+    return {
+        "content": result.get("content", ""),
+        "tokens_used": result.get("tokens_used", 0),
+    }
+
